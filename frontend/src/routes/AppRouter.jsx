@@ -5,6 +5,7 @@ import AdminTripsPage from "../pages/admin/trips/AdminTripsPage";
 import TripDetailsPage from "../pages/customer/trips/TripDetailsPage.jsx";
 import BookingDetailPage from "../pages/customer/bookings/BookingDetailPage";
 import MyBookingsPage from "../pages/customer/bookings/MyBookingsPage";
+import AdminBookingsPage from "../pages/admin/bookings/AdminBookingsPage";
 import BookingPage from "../pages/customer/bookings/BookingPage";
 import SeatSelectPage from "../pages/customer/seats/SeatSelectPage.jsx";
 import AdminLayout from "../layouts/Admin/AdminLayout";
@@ -32,6 +33,7 @@ function AppRouter() {
                         <Route path="routes" element={<RoutesPage />} />
                         <Route path="users" element={<UsersPage />} />
                         <Route path="trips" element={<AdminTripsPage />} />
+                        <Route path="bookings" element={<AdminBookingsPage />} />
                     </Route>
                 </Route>
             </Routes>

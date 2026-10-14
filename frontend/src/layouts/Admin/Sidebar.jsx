@@ -24,9 +24,18 @@ export default function Sidebar() {
                     <img src={routeic} alt="Bus" />Tuyến đường
                 </NavLink>
 
+                <NavLink to="/admin/trips">
+                    Chuyến xe
+                </NavLink>
+
                 <NavLink to="/admin/users">
                     <img src={useric} alt="Bus" />Người dùng
                 </NavLink>
+
+                <NavLink to="/admin/bookings">
+                    Bookings
+                </NavLink>
+                
             </nav>
 
             <div className="sidebar-bottom">
