@@ -47,6 +47,7 @@ export default function VehicleForm({ vehicle, onSubmit, onCancel, layout = "mod
             onSubmit={handleSubmit}
         >
             <div className="vehicle-form-fields">
+                {/* Biển số */}
                 <div className="form-group">
                     <label htmlFor="plate">
                         Biển số{layout === "page" && " *"}
@@ -62,7 +63,7 @@ export default function VehicleForm({ vehicle, onSubmit, onCancel, layout = "mod
                     />
                     {layout === "page" && <small>Tối đa 20 ký tự</small>}
                 </div>
-
+                {/* Loại xe */}
                 <div className="form-group">
                     <label htmlFor="type">
                         Loại xe{layout === "page" && " *"}
@@ -78,22 +79,22 @@ export default function VehicleForm({ vehicle, onSubmit, onCancel, layout = "mod
                     />
                     {layout === "page" && <small>Tối đa 50 ký tự</small>}
                 </div>
-
+                {/* Số ghế */}
                 <div className="form-group">
                     <label htmlFor="seats">
                         Số ghế{layout === "page" && " *"}
                     </label>
-                    <input
+                    <select
                         id="seats"
                         name="seats"
-                        type="number"
-                        min="1"
-                        step="1"
                         value={form.seats}
                         onChange={handleChange}
-                        placeholder={layout === "page" ? "Nhập số nguyên lớn hơn 0" : "Nhập số ghế"}
                         required
-                    />
+                    >
+                        <option value="12">12 chỗ</option>
+                        <option value="24">24 chỗ</option>
+                        <option value="36">36 chỗ</option>
+                    </select>
                 </div>
 
                 {layout === "page" ? (

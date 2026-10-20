@@ -31,7 +31,7 @@ public class SeatService {
     @Transactional(readOnly = true)
     public List<SeatAvailability> getAvailability(Long tripId) {
         Trip trip = tripRepository.findById(tripId)
-                .orElseThrow(() -> new ResourceNotFoundException("Trip not found: " + tripId));
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy chuyến xe có mã: " + tripId));
         Map<Long, String> occupied = new HashMap<>();
         ticketRepository.findOccupiedSeatIds(tripId, List.of(TicketStatus.RESERVED, TicketStatus.CONFIRMED))
                 .forEach(seatId -> occupied.put(seatId, "BOOKED"));

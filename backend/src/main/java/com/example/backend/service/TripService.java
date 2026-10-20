@@ -49,13 +49,13 @@ public class TripService {
 
     public Trip getTripById(Long id) {
         return tripRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Trip not found: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy chuyến xe có mã: " + id));
     }
 
     @Transactional
     public Trip createTrip(Trip trip) {
         if (trip.getId() != null) {
-            throw new BadRequestException("Do not supply an id when creating a trip");
+            throw new BadRequestException("Không được cung cấp mã chuyến xe khi tạo mới");
         }
         validateTrip(trip);
 
@@ -63,10 +63,10 @@ public class TripService {
         Long busId = trip.getBus().getId();
 
         Route route = routeRepository.findById(routeId)
-                .orElseThrow(() -> new ResourceNotFoundException("Route not found: " + routeId));
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy tuyến đường có mã: " + routeId));
 
         Bus bus = busRepository.findById(busId)
-                .orElseThrow(() -> new ResourceNotFoundException("Bus not found: " + busId));
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy xe có mã: " + busId));
 
         trip.setRoute(route);
         trip.setBus(bus);
@@ -74,14 +74,14 @@ public class TripService {
         Trip savedTrip = tripRepository.save(trip);
 
         return tripRepository.findById(savedTrip.getId())
-                .orElseThrow(() -> new ResourceNotFoundException("Trip not found: " + savedTrip.getId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy chuyến xe có mã: " + savedTrip.getId()));
     }
 
     @Transactional
     public Trip updateTrip(Long id, Trip updatedTrip) {
         validateTrip(updatedTrip);
         if (updatedTrip.getStatus() == null) {
-            throw new BadRequestException("Trip status is required when updating a trip");
+            throw new BadRequestException("Phải cung cấp trạng thái chuyến xe khi cập nhật");
         }
 
         Trip existingTrip = getTripForUpdate(id);
@@ -90,10 +90,10 @@ public class TripService {
         Long busId = updatedTrip.getBus().getId();
 
         Route route = routeRepository.findById(routeId)
-                .orElseThrow(() -> new RuntimeException("Route not found"));
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy tuyến đường"));
 
         Bus bus = busRepository.findById(busId)
-                .orElseThrow(() -> new RuntimeException("Bus not found"));
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy xe"));
 
         existingTrip.setRoute(route);
         existingTrip.setBus(bus);
@@ -106,7 +106,7 @@ public class TripService {
         Trip savedTrip = tripRepository.save(existingTrip);
 
         return tripRepository.findById(savedTrip.getId())
-                .orElseThrow(() -> new RuntimeException("Trip not found"));
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy chuyến xe"));
     }
 
     public void deleteTrip(Long id) {
@@ -116,7 +116,7 @@ public class TripService {
   
     private Trip getTripForUpdate(Long id) {
         return tripRepository.findByIdForUpdate(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Trip not found: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy chuyến xe có mã: " + id));
     }
 
     private boolean hasBookingOrTicket(Long tripId) {
@@ -140,25 +140,25 @@ public class TripService {
     private void validateTrip(Trip trip) {
 
         if (trip.getRoute() == null || trip.getRoute().getId() == null) {
-            throw new BadRequestException("Route is required");
+            throw new BadRequestException("Phải cung cấp tuyến đường");
         }
 
         if (trip.getBus() == null || trip.getBus().getId() == null) {
-            throw new BadRequestException("Bus is required");
+            throw new BadRequestException("Phải cung cấp xe");
         }
 
         if (trip.getDepartureTime() == null || trip.getArrivalTime() == null) {
-            throw new BadRequestException("Departure and arrival time are required");
+            throw new BadRequestException("Phải cung cấp thời gian khởi hành và thời gian đến");
         }
 
         if (!trip.getArrivalTime().isAfter(trip.getDepartureTime())) {
             throw new BadRequestException(
-                    "Arrival time must be after departure time"
+                    "Thời gian đến phải sau thời gian khởi hành"
             );
         }
 
         if (trip.getPrice() == null || trip.getPrice().signum() < 0) {
-            throw new RuntimeException("Price must be greater than or equal to 0");
+            throw new RuntimeException("Giá vé phải lớn hơn hoặc bằng 0");
         }
     }
 

@@ -23,21 +23,21 @@ public class UserService {
     public User getUserById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("User not found with id: " + id)
+                        new RuntimeException("Không tìm thấy người dùng có mã: " + id)
                 );
     }
 
     public User getUserByUsername(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(() ->
-                        new RuntimeException("User not found with username: " + username)
+                        new RuntimeException("Không tìm thấy người dùng có tên đăng nhập: " + username)
                 );
     }
 
     public User getUserByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() ->
-                        new RuntimeException("User not found with email: " + email)
+                        new RuntimeException("Không tìm thấy người dùng có email: " + email)
                 );
     }
 
