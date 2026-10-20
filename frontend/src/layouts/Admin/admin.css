@@ -216,3 +216,33 @@
 
 
 /* =================== Main Content / Outlet =================== */
+<<<<<<< HEAD
+=======
+
+
+/* =================== Sidebar: link khách hàng + đăng xuất =================== */
+.sidebar-actions {
+    display: flex;
+    gap: 10px;
+    margin: 0 10px 24px;
+}
+
+.sidebar-actions a,
+.sidebar-actions button {
+    flex: 1;
+    padding: 8px 10px;
+    font-size: 13px;
+    text-align: center;
+    color: #9aa7ba;
+    background: transparent;
+    border: 1px solid #2d3b52;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.sidebar-actions a:hover,
+.sidebar-actions button:hover {
+    color: #ffffff;
+    background: #1b3559;
+}
+>>>>>>> fe1
