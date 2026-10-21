@@ -173,7 +173,7 @@ function AdminBookingsPage() {
           {confirmMutation.isError && (
             <div className="action-error">
               Xác nhận booking thất bại:{" "}
-              <span>Vui lòng thử lại sau.</span>
+              {confirmMutation.error?.message}
             </div>
           )}
 

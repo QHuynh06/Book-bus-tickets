@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useDeleteAdminTrip, useAdminTrips } from "../../../hooks/useTrips";
 
 import CreateTripForm from "./CreateTripForm";
@@ -14,6 +14,29 @@ const STATUS_OPTIONS = [
   { value: "CANCELLED", label: "Đã hủy" },
 ];
 const EMPTY_TRIPS = [];
+const PAGE_SIZE = 30;
+
+function sortNewestFirst(items) {
+  return [...items].sort((a, b) => {
+    const dateA = a.createdAt
+      ? new Date(a.createdAt).getTime()
+      : NaN;
+
+    const dateB = b.createdAt
+      ? new Date(b.createdAt).getTime()
+      : NaN;
+
+    if (
+      Number.isFinite(dateA) &&
+      Number.isFinite(dateB) &&
+      dateA !== dateB
+    ) {
+      return dateB - dateA;
+    }
+
+    return Number(b.id) - Number(a.id);
+  });
+}
 
 function formatDateTime(value) {
   if (!value) {
@@ -41,6 +64,15 @@ function getStatusLabel(status) {
   );
 
   return option?.label ?? status;
+}
+
+function getLocalDateTime() {
+  const now = new Date();
+  const offset = now.getTimezoneOffset() * 60000;
+
+  return new Date(now.getTime() - offset)
+    .toISOString()
+    .slice(0, 16);
 }
 
 function AdminTripsPage() {
@@ -142,8 +174,7 @@ function AdminTripsPage() {
           <div className="error-icon">!</div>
 
           <h2>Không thể tải dữ liệu</h2>
-
-          <p>{error?.message}</p>
+          <p> Đã xảy ra lỗi khi tải danh sách chuyến xe. Vui lòng thử lại sau. </p>
 
           <button
             type="button"
@@ -288,8 +319,7 @@ function AdminTripsPage() {
           {/* Delete error */}
           {deleteMutation.isError && (
             <div className="action-error">
-              Xóa chuyến thất bại:{" "}
-              {deleteMutation.error?.message}
+              Xóa chuyến thất bại. Vui lòng thử lại.
             </div>
           )}
 
@@ -461,6 +491,7 @@ function AdminTripsPage() {
 
             <CreateTripForm
               onClose={() => setShowCreateModal(false)}
+              today = {getLocalDateTime()}
             />
           </div>
         </div>
@@ -489,6 +520,7 @@ function AdminTripsPage() {
               key={editingTripId}
               tripId={editingTripId}
               onClose={() => setEditingTripId(null)}
+              today = {getLocalDateTime()}
             />
           </div>
         </div>
