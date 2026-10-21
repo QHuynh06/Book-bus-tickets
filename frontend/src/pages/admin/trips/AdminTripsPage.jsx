@@ -1,10 +1,15 @@
 import { useEffect, useMemo, useState } from "react";
-import { useDeleteAdminTrip, useAdminTrips } from "../../../hooks/useTrips";
+import {
+  useDeleteAdminTrip,
+  useAdminTrips,
+} from "../../../hooks/useTrips";
 
 import CreateTripForm from "./CreateTripForm";
 import EditTripForm from "./EditTripForm";
 
 import "./AdminTripsPage.css";
+
+const PAGE_SIZE = 30;
 
 const STATUS_OPTIONS = [
   { value: "ALL", label: "Tất cả trạng thái" },
@@ -13,29 +18,13 @@ const STATUS_OPTIONS = [
   { value: "COMPLETED", label: "Hoàn thành" },
   { value: "CANCELLED", label: "Đã hủy" },
 ];
+
 const EMPTY_TRIPS = [];
-const PAGE_SIZE = 30;
 
-function sortNewestFirst(items) {
-  return [...items].sort((a, b) => {
-    const dateA = a.createdAt
-      ? new Date(a.createdAt).getTime()
-      : NaN;
-
-    const dateB = b.createdAt
-      ? new Date(b.createdAt).getTime()
-      : NaN;
-
-    if (
-      Number.isFinite(dateA) &&
-      Number.isFinite(dateB) &&
-      dateA !== dateB
-    ) {
-      return dateB - dateA;
-    }
-
-    return Number(b.id) - Number(a.id);
-  });
+function sortTripsByIdDescending(trips) {
+  return [...trips].sort(
+    (a, b) => Number(b.id) - Number(a.id),
+  );
 }
 
 function formatDateTime(value) {
@@ -78,19 +67,33 @@ function getLocalDateTime() {
 function AdminTripsPage() {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("ALL");
+  const [currentPage, setCurrentPage] = useState(1);
 
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [editingTripId, setEditingTripId] = useState(null);
 
   const tripsQuery = useAdminTrips();
   const deleteMutation = useDeleteAdminTrip();
-  const { isPending, isError, error, refetch } = tripsQuery;
+
+  const {
+    isPending,
+    isError,
+    refetch,
+  } = tripsQuery;
+
   const trips = tripsQuery.data ?? EMPTY_TRIPS;
 
+  // Sắp xếp ID trip từ lớn đến nhỏ.
+  const sortedTrips = useMemo(
+    () => sortTripsByIdDescending(trips),
+    [trips],
+  );
+
+  // Tìm kiếm và lọc trạng thái.
   const filteredTrips = useMemo(() => {
     const normalizedSearch = search.trim().toLowerCase();
 
-    return trips.filter((trip) => {
+    return sortedTrips.filter((trip) => {
       const matchesStatus =
         statusFilter === "ALL" ||
         trip.status === statusFilter;
@@ -124,10 +127,11 @@ function AdminTripsPage() {
 
       return matchesSearch && matchesStatus;
     });
-  }, [trips, search, statusFilter]);
+  }, [sortedTrips, search, statusFilter]);
 
-  const statistics = useMemo(() => {
-    return {
+  // Thống kê theo toàn bộ danh sách trip, không chỉ trang hiện tại.
+  const statistics = useMemo(
+    () => ({
       total: trips.length,
       scheduled: trips.filter(
         (trip) => trip.status === "SCHEDULED",
@@ -141,8 +145,54 @@ function AdminTripsPage() {
       cancelled: trips.filter(
         (trip) => trip.status === "CANCELLED",
       ).length,
-    };
-  }, [trips]);
+    }),
+    [trips],
+  );
+
+  // Tính toán phân trang.
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredTrips.length / PAGE_SIZE),
+  );
+
+  const paginatedTrips = useMemo(() => {
+    const startIndex = (currentPage - 1) * PAGE_SIZE;
+
+    return filteredTrips.slice(
+      startIndex,
+      startIndex + PAGE_SIZE,
+    );
+  }, [filteredTrips, currentPage]);
+
+  // Hiển thị tối đa 5 nút số trang.
+  const pageNumbers = useMemo(() => {
+    const startPage = Math.max(
+      1,
+      Math.min(currentPage - 2, totalPages - 4),
+    );
+
+    const endPage = Math.min(
+      totalPages,
+      startPage + 4,
+    );
+
+    return Array.from(
+      { length: endPage - startPage + 1 },
+      (_, index) => startPage + index,
+    );
+  }, [currentPage, totalPages]);
+
+  // Thay đổi tìm kiếm hoặc trạng thái thì quay về trang 1.
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, statusFilter]);
+
+  // Tránh ở lại trang không còn dữ liệu sau khi xóa hoặc lọc.
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
 
   const handleDelete = (tripId) => {
     const confirmed = window.confirm(
@@ -174,7 +224,11 @@ function AdminTripsPage() {
           <div className="error-icon">!</div>
 
           <h2>Không thể tải dữ liệu</h2>
-          <p> Đã xảy ra lỗi khi tải danh sách chuyến xe. Vui lòng thử lại sau. </p>
+
+          <p>
+            Đã xảy ra lỗi khi tải danh sách chuyến xe.
+            Vui lòng thử lại sau.
+          </p>
 
           <button
             type="button"
@@ -194,7 +248,9 @@ function AdminTripsPage() {
         {/* Header */}
         <header className="page-header">
           <div>
-            <span className="page-eyebrow">ADMINISTRATION</span>
+            <span className="page-eyebrow">
+              ADMINISTRATION
+            </span>
 
             <h1>Quản lý chuyến xe</h1>
 
@@ -216,10 +272,15 @@ function AdminTripsPage() {
         {/* Statistics */}
         <section className="stats-grid">
           <div className="stat-card">
-            <div className="stat-icon stat-icon-blue">▣</div>
+            <div className="stat-icon stat-icon-blue">
+              ▣
+            </div>
 
             <div>
-              <span className="stat-label">Tổng chuyến</span>
+              <span className="stat-label">
+                Tổng chuyến
+              </span>
+
               <strong className="stat-value">
                 {statistics.total}
               </strong>
@@ -227,10 +288,15 @@ function AdminTripsPage() {
           </div>
 
           <div className="stat-card">
-            <div className="stat-icon stat-icon-yellow">◷</div>
+            <div className="stat-icon stat-icon-yellow">
+              ◷
+            </div>
 
             <div>
-              <span className="stat-label">Đã lên lịch</span>
+              <span className="stat-label">
+                Đã lên lịch
+              </span>
+
               <strong className="stat-value">
                 {statistics.scheduled}
               </strong>
@@ -238,10 +304,15 @@ function AdminTripsPage() {
           </div>
 
           <div className="stat-card">
-            <div className="stat-icon stat-icon-purple">➜</div>
+            <div className="stat-icon stat-icon-purple">
+              ➜
+            </div>
 
             <div>
-              <span className="stat-label">Đã khởi hành</span>
+              <span className="stat-label">
+                Đã khởi hành
+              </span>
+
               <strong className="stat-value">
                 {statistics.departed}
               </strong>
@@ -249,10 +320,15 @@ function AdminTripsPage() {
           </div>
 
           <div className="stat-card">
-            <div className="stat-icon stat-icon-green">✓</div>
+            <div className="stat-icon stat-icon-green">
+              ✓
+            </div>
 
             <div>
-              <span className="stat-label">Hoàn thành</span>
+              <span className="stat-label">
+                Hoàn thành
+              </span>
+
               <strong className="stat-value">
                 {statistics.completed}
               </strong>
@@ -260,10 +336,15 @@ function AdminTripsPage() {
           </div>
 
           <div className="stat-card">
-            <div className="stat-icon stat-icon-red">❌</div>
+            <div className="stat-icon stat-icon-red">
+              ❌
+            </div>
 
             <div>
-              <span className="stat-label">Đã hủy</span>
+              <span className="stat-label">
+                Đã hủy
+              </span>
+
               <strong className="stat-value">
                 {statistics.cancelled}
               </strong>
@@ -352,7 +433,7 @@ function AdminTripsPage() {
                 </thead>
 
                 <tbody>
-                  {filteredTrips.map((trip) => (
+                  {paginatedTrips.map((trip) => (
                     <tr key={trip.id}>
                       <td>
                         <span className="trip-id">
@@ -420,7 +501,7 @@ function AdminTripsPage() {
 
                       <td>
                         <span className="note-text">
-                          {trip.notes}
+                          {trip.notes || "-"}
                         </span>
                       </td>
 
@@ -467,6 +548,63 @@ function AdminTripsPage() {
               </table>
             </div>
           )}
+
+          {/* Pagination */}
+          {filteredTrips.length > 0 && (
+            <div className="table-pagination">
+              <span className="pagination-info">
+                Hiển thị{" "}
+                {(currentPage - 1) * PAGE_SIZE + 1}–
+                {Math.min(
+                  currentPage * PAGE_SIZE,
+                  filteredTrips.length,
+                )}{" "}
+                / {filteredTrips.length} chuyến
+              </span>
+
+              <div className="pagination-controls">
+                <button
+                  type="button"
+                  className="pagination-btn"
+                  disabled={currentPage === 1}
+                  onClick={() =>
+                    setCurrentPage((page) => page - 1)
+                  }
+                >
+                  Trước
+                </button>
+
+                {pageNumbers.map((page) => (
+                  <button
+                    key={page}
+                    type="button"
+                    className={`pagination-btn ${
+                      currentPage === page ? "active" : ""
+                    }`}
+                    aria-current={
+                      currentPage === page
+                        ? "page"
+                        : undefined
+                    }
+                    onClick={() => setCurrentPage(page)}
+                  >
+                    {page}
+                  </button>
+                ))}
+
+                <button
+                  type="button"
+                  className="pagination-btn"
+                  disabled={currentPage === totalPages}
+                  onClick={() =>
+                    setCurrentPage((page) => page + 1)
+                  }
+                >
+                  Sau
+                </button>
+              </div>
+            </div>
+          )}
         </section>
       </div>
 
@@ -491,7 +629,7 @@ function AdminTripsPage() {
 
             <CreateTripForm
               onClose={() => setShowCreateModal(false)}
-              today = {getLocalDateTime()}
+              today={getLocalDateTime()}
             />
           </div>
         </div>
@@ -520,7 +658,7 @@ function AdminTripsPage() {
               key={editingTripId}
               tripId={editingTripId}
               onClose={() => setEditingTripId(null)}
-              today = {getLocalDateTime()}
+              today={getLocalDateTime()}
             />
           </div>
         </div>
