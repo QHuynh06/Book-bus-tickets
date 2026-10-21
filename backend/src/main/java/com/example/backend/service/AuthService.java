@@ -29,11 +29,11 @@ public class AuthService {
     public User register(RegisterRequest request) {
 
         if (userRepository.existsByUsername(request.getUsername())) {
-            throw new RuntimeException("Username already exists");
+            throw new RuntimeException("Tên đăng nhập đã tồn tại");
         }
 
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("Email already exists");
+            throw new RuntimeException("Email đã tồn tại");
         }
 
         String passwordHash =
@@ -56,7 +56,7 @@ public class AuthService {
         User user = userRepository
                 .findByEmail(request.getEmail())
                 .orElseThrow(() ->
-                        new RuntimeException("Invalid email or password")
+                        new RuntimeException("Email hoặc mật khẩu không đúng")
                 );
 
         boolean passwordMatches =
@@ -67,7 +67,7 @@ public class AuthService {
 
         if (!passwordMatches) {
             throw new RuntimeException(
-                    "Invalid email or password"
+                    "Email hoặc mật khẩu không đúng"
             );
         }
 

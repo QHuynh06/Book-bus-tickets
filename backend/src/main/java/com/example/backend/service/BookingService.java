@@ -99,7 +99,7 @@ public class BookingService {
             List<ConflictSeat> conflicts = submissionTransaction.execute(status ->
                     ticketRepository.findConflictingSeats(request.tripId(), request.seatIds(),
                             List.of(TicketStatus.RESERVED, TicketStatus.CONFIRMED)));
-            throw new SeatConflictException("One or more selected seats are no longer available", conflicts);
+            throw new SeatConflictException("Một hoặc nhiều ghế đã chọn không còn trống", conflicts);
         }
     }
 
@@ -110,7 +110,7 @@ public class BookingService {
         // Share the trip lock with updates so its bus cannot change during checkout.
         Trip trip = tripRepository.findByIdForUpdate(request.tripId())
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Trip not found: " + request.tripId()
+                        "Không tìm thấy chuyến xe có mã: " + request.tripId()
                 ));
 
         ensureTripBookable(trip);
@@ -137,7 +137,7 @@ public class BookingService {
 
         if (!conflictingSeatIds.isEmpty()) {
             throw new SeatConflictException(
-                    "One or more selected seats are no longer available",
+                    "Một hoặc nhiều ghế đã chọn không còn trống",
                     conflictingSeatIds.stream()
                             .map(id -> new ConflictSeat(
                                     id, seats.get(id).getSeatNumber()
@@ -148,12 +148,12 @@ public class BookingService {
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "User not found: " + userId
+                        "Không tìm thấy người dùng có mã: " + userId
                 ));
 
         BigDecimal totalAmount = trip.getPrice().multiply(BigDecimal.valueOf(orderedSeatIds.size()));
         if (totalAmount.compareTo(MAX_TOTAL_AMOUNT) > 0) {
-            throw new BadRequestException("Booking total amount exceeds the supported maximum of 9999999999.99");
+            throw new BadRequestException("Tổng tiền đặt vé vượt quá mức tối đa cho phép là 9999999999.99");
         }
 
         Booking booking = new Booking();
@@ -241,7 +241,7 @@ public class BookingService {
                 .filter(item -> item.getId().equals(ticketId))
                 .findFirst()
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Ticket not found in booking: " + ticketId
+                        "Không tìm thấy vé trong đơn đặt vé có mã vé: " + ticketId
                 ));
 
         if (ticket.getStatus() == TicketStatus.CANCELLED) {
@@ -269,16 +269,16 @@ public class BookingService {
 
     private Map<Long, PassengerDetails> passengersBySeat(CreateBookingRequest request) {
         if (request.seatIds().stream().distinct().count() != request.seatIds().size()) {
-            throw new BadRequestException("seatIds must not contain duplicates");
+            throw new BadRequestException("Danh sách mã ghế không được chứa mã trùng lặp");
         }
         Map<Long, PassengerDetails> passengers = new HashMap<>();
         for (PassengerDetails passenger : request.passengers()) {
             if (passengers.putIfAbsent(passenger.seatId(), passenger) != null) {
-                throw new BadRequestException("Passenger details contain duplicate seatIds");
+                throw new BadRequestException("Thông tin hành khách chứa mã ghế trùng lặp");
             }
         }
         if (!passengers.keySet().equals(Set.copyOf(request.seatIds()))) {
-            throw new BadRequestException("Provide exactly one passenger record for every selected seat");
+            throw new BadRequestException("Phải cung cấp thông tin của đúng một hành khách cho mỗi ghế đã chọn");
         }
         return passengers;
     }
@@ -287,12 +287,12 @@ public class BookingService {
         Map<Long, Seat> seats = new HashMap<>();
         for (Long seatId : orderedSeatIds) {
             Seat seat = seatRepository.findByIdForUpdate(seatId)
-                    .orElseThrow(() -> new ResourceNotFoundException("Seat not found: " + seatId));
+                    .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy ghế có mã: " + seatId));
             if (!seat.getBus().getId().equals(trip.getBus().getId())) {
-                throw new BadRequestException("Seat does not belong to this trip's bus");
+                throw new BadRequestException("Ghế không thuộc xe của chuyến xe này");
             }
             if (seat.getStatus() != SeatStatus.ACTIVE) {
-                throw new BadRequestException("Seat is not active: " + seatId);
+                throw new BadRequestException("Ghế không hoạt động, mã ghế: " + seatId);
             }
             seats.put(seatId, seat);
         }
@@ -302,23 +302,23 @@ public class BookingService {
     private void lockSeats(Trip trip, List<Long> seatIds) {
         seatIds.stream().distinct().sorted().forEach(seatId -> {
             Seat seat = seatRepository.findByIdForUpdate(seatId)
-                    .orElseThrow(() -> new ResourceNotFoundException("Seat not found: " + seatId));
+                    .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy ghế có mã: " + seatId));
             if (!seat.getBus().getId().equals(trip.getBus().getId())) {
-                throw new BadRequestException("Seat does not belong to this trip's bus");
+                throw new BadRequestException("Ghế không thuộc xe của chuyến xe này");
             }
         });
     }
 
     private Booking getOwnedBooking(Long userId, Long bookingId) {
         Booking booking = bookingRepository.findById(bookingId)
-                .orElseThrow(() -> new ResourceNotFoundException("Booking not found: " + bookingId));
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy đơn đặt vé có mã: " + bookingId));
         requireOwner(userId, booking);
         return booking;
     }
 
     private void requireOwner(Long userId, Booking booking) {
         if (booking.getUser() == null || !booking.getUser().getId().equals(userId)) {
-            throw new ForbiddenException("You cannot access this booking");
+            throw new ForbiddenException("Bạn không có quyền truy cập đơn đặt vé này");
         }
     }
 
@@ -327,13 +327,13 @@ public class BookingService {
                 || !trip.getDepartureTime().isAfter(LocalDateTime.now())
                 || trip.getBus().getStatus() != BusStatus.ACTIVE
                 || trip.getRoute().getStatus() != RouteStatus.ACTIVE) {
-            throw new BadRequestException("Trip is not open for booking");
+            throw new BadRequestException("Chuyến xe chưa mở hoặc đã ngừng nhận đặt vé");
         }
     }
 
     private void ensureCancellationAllowed(Trip trip) {
         if (!trip.getDepartureTime().isAfter(LocalDateTime.now())) {
-            throw new BadRequestException("Tickets can no longer be cancelled after trip departure");
+            throw new BadRequestException("Không thể hủy vé sau khi chuyến xe đã khởi hành");
         }
     }
 
@@ -376,13 +376,13 @@ public class BookingService {
     // Clear pre-lock entities so current locking reads see concurrent commits.
     private Booking lockBooking(Long bookingId) {
         Booking preview = bookingRepository.findById(bookingId)
-                .orElseThrow(() -> new ResourceNotFoundException("Booking not found: " + bookingId));
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy đơn đặt vé có mã: " + bookingId));
         List<Long> seatIds = ticketRepository.findByBookingIdOrderById(bookingId).stream()
                 .map(ticket -> ticket.getSeat().getId()).toList();
         lockSeats(preview.getTrip(), seatIds);
         entityManager.clear();
         return bookingRepository.findByIdForUpdate(bookingId)
-                .orElseThrow(() -> new ResourceNotFoundException("Booking not found: " + bookingId));
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy đơn đặt vé có mã: " + bookingId));
     }
 
     @Transactional
@@ -390,14 +390,14 @@ public class BookingService {
         Booking booking = lockBooking(bookingId);
         List<Ticket> tickets = ticketRepository.findByBookingIdForUpdate(bookingId);
         if (booking.getStatus() == BookingStatus.CANCELLED) {
-            throw new BadRequestException("Cancelled bookings cannot be confirmed");
+            throw new BadRequestException("Không thể xác nhận đơn đặt vé đã hủy");
         }
         if (tickets.stream().noneMatch(this::isActive)) {
-            throw new BadRequestException("Booking has no active tickets");
+            throw new BadRequestException("Đơn đặt vé không có vé nào còn hiệu lực");
         }
         if (booking.getStatus() == BookingStatus.PENDING) {
             if (tickets.stream().noneMatch(ticket -> ticket.getStatus() == TicketStatus.RESERVED)) {
-                throw new BadRequestException("Booking has no reserved tickets");
+                throw new BadRequestException("Đơn đặt vé không có vé nào đang được giữ chỗ");
             }
             tickets.stream().filter(ticket -> ticket.getStatus() == TicketStatus.RESERVED)
                     .forEach(ticket -> ticket.setStatus(TicketStatus.CONFIRMED));

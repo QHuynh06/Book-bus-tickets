@@ -32,6 +32,6 @@ export function toDateInputValue(date = new Date()) {
 // Lấy câu thông báo lỗi để hiển thị cho người dùng
 export function getErrorMessage(error) {
   if (error?.response?.data?.message) return error.response.data.message; // lỗi do backend trả về
-  if (error?.code === "ERR_NETWORK") return "Không kết nối được máy chủ. Hãy kiểm tra backend đã chạy ở cổng 8080 chưa.";
+  if (error?.code === "ERR_NETWORK") return "Máy chủ gặp sự cố, vui lòng thử lại sau.";
   return error?.message || "Đã có lỗi xảy ra. Vui lòng thử lại.";
 }

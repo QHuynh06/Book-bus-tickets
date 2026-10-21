@@ -1,9 +1,9 @@
 /* =================== Admin Layout =================== */
 .admin-layout {
-    width: 100%;
-    min-height: 100vh;
     display: flex;
-    background: #f3f4f6;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
 }
 
 .main-content {
@@ -216,8 +216,6 @@
 
 
 /* =================== Main Content / Outlet =================== */
-<<<<<<< HEAD
-=======
 
 
 /* =================== Sidebar: link khách hàng + đăng xuất =================== */
@@ -245,4 +243,3 @@
     color: #ffffff;
     background: #1b3559;
 }
->>>>>>> fe1

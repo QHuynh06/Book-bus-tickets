@@ -38,6 +38,17 @@ function RouteStop({ label, value, station, tone }) {
     );
 }
 
+const TRIP_STATUS_LABELS = {
+    SCHEDULED: "Đã lên lịch",
+    DEPARTED: "Đã khởi hành",
+    COMPLETED: "Hoàn thành",
+    CANCELLED: "Đã hủy",
+};
+
+const getTripStatusLabel = (status) => {
+    return TRIP_STATUS_LABELS[status] ?? status ?? "Chưa cập nhật";
+};
+
 export default function TripDetailsPage() {
     const { tripId } = useParams();
     const tripQuery = useTrip(tripId);
@@ -122,7 +133,7 @@ export default function TripDetailsPage() {
                             </div>
                             <div className="trip-fact">
                                 <span>Trạng thái</span>
-                                <strong>{trip.status || "—"}</strong>
+                                <strong>{getTripStatusLabel(trip.status)}</strong>
                             </div>
                             <div className="trip-fact">
                                 <span>Số ghế</span>

@@ -12,11 +12,8 @@ import apiClient from "./apiClient";
  */
 
 export async function searchTrips({ from, to, date }) {
-  if (!from || !to)
-    throw new Error("Vui lòng chọn cả điểm đi và điểm đến để tìm chuyến.");
-  const response = await apiClient.get("/trips", {
-    params: { from, to, date },
-  });
+  if (!from || !to) throw new Error("Vui lòng chọn cả điểm đi và điểm đến để tìm chuyến.");
+  const response = await apiClient.get("/trips", { params: { from, to, date } });
   return response.data;
 }
 

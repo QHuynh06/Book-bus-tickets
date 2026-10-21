@@ -47,20 +47,13 @@ export default function SearchTrips() {
       </div>
 
       <div className="row">
-<<<<<<< HEAD
-        <h1>{from && to ? <RouteLabel from={cityLabel(from)} to={cityLabel(to)} /> : "Tất cả chuyến xe"}</h1>
-        <span className="muted">{formatDate(`${date}T00:00:00`)}</span>
-      </div>
-
-      {isPending && <Spinner label="Đang tìm chuyến..." />}
-=======
         <h1>{from && to ? <RouteLabel from={cityLabel(from)} to={cityLabel(to)} /> : "Tìm chuyến xe"}</h1>
         <span className="muted">{formatDate(`${date}T00:00:00`)}</span>
       </div>
 
       {!ready && <EmptyState title="Chọn tuyến để tìm chuyến">Hãy chọn điểm đi, điểm đến và ngày đi rồi bấm tìm.</EmptyState>}
       {ready && isPending && <Spinner label="Đang tìm chuyến..." />}
->>>>>>> fe1
+      
       {isError && <ErrorState error={error} onRetry={refetch} title="Không tìm được chuyến xe" />}
 
       {trips?.length === 0 && (

@@ -3,7 +3,7 @@ import { useState } from "react";
 const emptyForm = {
     plate: "",
     type: "",
-    seats: "",
+    seats: 12,
     active: true,
     description: "",
 };
@@ -17,7 +17,7 @@ export default function VehicleForm({ vehicle, onSubmit, onCancel, layout = "mod
         return {
             plate: vehicle.plate ?? "",
             type: vehicle.type ?? "",
-            seats: vehicle.seats ?? "",
+            seats: vehicle.seats ?? 12,
             active: vehicle.active ?? true,
             description: vehicle.description ?? "",
         };
@@ -28,7 +28,12 @@ export default function VehicleForm({ vehicle, onSubmit, onCancel, layout = "mod
 
         setForm((prev) => ({
             ...prev,
-            [name]: type === "checkbox" ? checked : value,
+            [name]:
+                type === "checkbox"
+                    ? checked
+                    : name === "seats"
+                        ? Number(value)
+                        : value,
         }));
     };
 
@@ -47,6 +52,7 @@ export default function VehicleForm({ vehicle, onSubmit, onCancel, layout = "mod
             onSubmit={handleSubmit}
         >
             <div className="vehicle-form-fields">
+                {/* Biển số */}
                 <div className="form-group">
                     <label htmlFor="plate">
                         Biển số{layout === "page" && " *"}
@@ -63,6 +69,7 @@ export default function VehicleForm({ vehicle, onSubmit, onCancel, layout = "mod
                     {layout === "page" && <small>Tối đa 20 ký tự</small>}
                 </div>
 
+                {/* Loại xe */}
                 <div className="form-group">
                     <label htmlFor="type">
                         Loại xe{layout === "page" && " *"}
@@ -79,21 +86,22 @@ export default function VehicleForm({ vehicle, onSubmit, onCancel, layout = "mod
                     {layout === "page" && <small>Tối đa 50 ký tự</small>}
                 </div>
 
+                {/* Số ghế */}
                 <div className="form-group">
                     <label htmlFor="seats">
                         Số ghế{layout === "page" && " *"}
                     </label>
-                    <input
+                    <select
                         id="seats"
                         name="seats"
-                        type="number"
-                        min="1"
-                        step="1"
                         value={form.seats}
                         onChange={handleChange}
-                        placeholder={layout === "page" ? "Nhập số nguyên lớn hơn 0" : "Nhập số ghế"}
                         required
-                    />
+                    >
+                        <option value={12}>12 ghế</option>
+                        <option value={24}>24 ghế</option>
+                        <option value={36}>36 ghế</option>
+                    </select>
                 </div>
 
                 {layout === "page" ? (
