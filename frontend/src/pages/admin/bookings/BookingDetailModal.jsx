@@ -25,6 +25,33 @@ function BookingDetailModal({
   const trip = tripResponse?.data;
   const tickets = booking.tickets ?? [];
 
+  const passengerGroups = tickets.reduce((groups, ticket) => {
+    const passengerName =
+      ticket.passengerName?.trim() || "Chưa cập nhật";
+
+    const passengerPhone =
+      ticket.passengerPhone?.trim() || "-";
+
+    const key = `${passengerName}::${passengerPhone}`;
+
+    const existingGroup = groups.find(
+      (group) => group.key === key,
+    );
+
+    if (existingGroup) {
+      existingGroup.tickets.push(ticket);
+    } else {
+      groups.push({
+        key,
+        passengerName,
+        passengerPhone,
+        tickets: [ticket],
+      });
+    }
+
+    return groups;
+  }, []);
+
   return (
     <div
       className="modal-backdrop"
@@ -165,6 +192,50 @@ function BookingDetailModal({
         </section>
 
         <section className="detail-section">
+          <h3>Thông tin hành khách</h3>
+
+          {passengerGroups.length === 0 ? (
+            <div className="detail-empty">
+              Booking chưa có thông tin hành khách.
+            </div>
+          ) : (
+            <div className="ticket-list">
+              {passengerGroups.map((group) => (
+                <div className="ticket-item" key={group.key}>
+                  <div className="ticket-grid">
+                    <div>
+                      <span>Họ và tên</span>
+                      <strong>{group.passengerName}</strong>
+                    </div>
+
+                    <div>
+                      <span>Số điện thoại</span>
+                      <strong>{group.passengerPhone}</strong>
+                    </div>
+
+                    <div>
+                      <span>Ghế đã đặt</span>
+                      <strong>
+                        {group.tickets
+                          .map(
+                            (ticket) => `#${ticket.seatId}`
+                          )
+                          .join(", ")}
+                      </strong>
+                    </div>
+
+                    <div>
+                      <span>Số vé</span>
+                      <strong>{group.tickets.length}</strong>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+
+        <section className="detail-section">
           <h3>Danh sách vé</h3>
 
           {tickets.length === 0 ? (
@@ -174,14 +245,9 @@ function BookingDetailModal({
           ) : (
             <div className="ticket-list">
               {tickets.map((ticket) => (
-                <div
-                  className="ticket-item"
-                  key={ticket.id}
-                >
+                <div className="ticket-item" key={ticket.id}>
                   <div className="ticket-top">
-                    <strong>
-                      Vé #{ticket.id}
-                    </strong>
+                    <strong>Vé #{ticket.id}</strong>
 
                     <span
                       className={`ticket-status ticket-status-${ticket.status.toLowerCase()}`}
@@ -192,31 +258,20 @@ function BookingDetailModal({
 
                   <div className="ticket-grid">
                     <div>
-                      <span>Ghế</span>
+                      <span>Mã ghế</span>
                       <strong>
-                        {ticket.seatNumber ?? "-"}
+                        #{ticket.seatId}
                       </strong>
                     </div>
 
                     <div>
-                      <span>Hành khách</span>
-                      <strong>
-                        {ticket.passengerName ?? "-"}
-                      </strong>
+                      <span>Số ghế</span>
+                      <strong>{ticket.seatNumber ?? "-"}</strong>
                     </div>
 
                     <div>
-                      <span>Số điện thoại</span>
-                      <strong>
-                        {ticket.passengerPhone ?? "-"}
-                      </strong>
-                    </div>
-
-                    <div>
-                      <span>Giá</span>
-                      <strong>
-                        {formatPrice(ticket.price)}
-                      </strong>
+                      <span>Giá vé</span>
+                      <strong>{formatPrice(ticket.price)}</strong>
                     </div>
                   </div>
                 </div>

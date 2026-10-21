@@ -63,7 +63,25 @@ function BookingTable({
                 </td>
 
                 <td>
-                  <strong>{tickets.length}</strong>
+                  <strong>{tickets.length} vé</strong>
+
+                  {tickets.length > 0 && (
+                    <div className="ticket-seat-summary">
+                      {tickets.map((ticket) => (
+                        <span
+                          key={ticket.id}
+                          className={`ticket-seat-chip ${
+                            ticket.status === "CANCELLED"
+                              ? "ticket-seat-chip-cancelled"
+                              : ""
+                          }`}
+                          title={`Vé #${ticket.id}`}
+                        >
+                          #{ticket.seatId}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </td>
 
                 <td>

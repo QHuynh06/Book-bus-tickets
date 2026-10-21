@@ -64,7 +64,7 @@ export default function SeatSelectPage() {
         );
     }
 
-    const handleContinue = () => {
+    const   handleContinue = () => {
         navigate("/booking", {
             state: {
                 tripId: Number(tripId),

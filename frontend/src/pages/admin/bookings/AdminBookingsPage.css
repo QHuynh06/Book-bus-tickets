@@ -736,3 +736,28 @@
     width: 100%;
   }
 }
+
+.ticket-seat-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 8px;
+}
+
+.ticket-seat-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 7px;
+  border-radius: 6px;
+  background: #eef4ff;
+  color: #2563eb;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.ticket-seat-chip-cancelled {
+  background: #f0f1f3;
+  color: #888f9b;
+  text-decoration: line-through;
+}

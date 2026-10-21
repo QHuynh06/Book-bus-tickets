@@ -12,16 +12,9 @@ function BookingPage() {
 
   const selection = location.state;
 
-  const [passengers, setPassengers] = useState(() => {
-    if (!selection?.selectedSeatIds) {
-      return [];
-    }
-
-    return selection.selectedSeatIds.map((seatId) => ({
-      seatId,
-      passengerName: "",
-      passengerPhone: "",
-    }));
+  const [passengerInfo, setPassengerInfo] = useState({
+    passengerName: "",
+    passengerPhone: "",
   });
 
   const tripId = selection?.tripId;
@@ -97,7 +90,7 @@ function BookingPage() {
         <div className="booking-error">
           <h1>Không thể tải chuyến xe</h1>
 
-          <p>{tripQuery.error?.message}</p>
+          <p>Vui lòng thử lại sau.</p>
         </div>
       </div>
     );
@@ -105,27 +98,18 @@ function BookingPage() {
 
   const trip = tripQuery.data;
 
-  const updatePassenger = (
-    index,
-    field,
-    value,
-  ) => {
-    setPassengers((current) =>
-      current.map((passenger, passengerIndex) => {
-        if (passengerIndex !== index) {
-          return passenger;
-        }
-
-        return {
-          ...passenger,
-          [field]: value,
-        };
-      }),
-    );
-  };
-
   const handleSubmit = (event) => {
     event.preventDefault();
+
+    const passengerName = passengerInfo.passengerName.trim();
+    const passengerPhone = passengerInfo.passengerPhone.trim();
+
+    // Tạo thông tin cho từng ghế từ cùng một người
+    const passengers = selectedSeatIds.map((seatId) => ({
+      seatId,
+      passengerName,
+      passengerPhone,
+    }));
 
     const payload = {
       tripId,
@@ -222,7 +206,7 @@ function BookingPage() {
             </div>
 
             <div className="selected-seats">
-              <span>Seat ID đã chọn</span>
+              <span>Ghế đã chọn</span>
 
               <div className="seat-tags">
                 {selectedSeatIds.map((seatId) => (
@@ -239,75 +223,61 @@ function BookingPage() {
             <div className="section-heading">
               <div>
                 <h2>Thông tin hành khách</h2>
-
-                <p>
-                  Mỗi ghế tương ứng với một hành khách.
-                </p>
               </div>
             </div>
 
             <form onSubmit={handleSubmit}>
               <div className="passenger-list">
-                {passengers.map(
-                  (passenger, index) => (
-                    <div
-                      className="passenger-card"
-                      key={passenger.seatId}
-                    >
-                      <div className="passenger-title">
-                        <strong>
-                          Hành khách {index + 1}
-                        </strong>
+                <div className="passenger-card">
+                  <div className="passenger-title">
+                    <strong>Thông tin hành khách</strong>
 
-                        <span>
-                          Ghế #{passenger.seatId}
-                        </span>
-                      </div>
+                    <span>
+                      {selectedSeatIds.length} ghế đã chọn
+                    </span>
+                  </div>
 
-                      <div className="field-grid">
-                        <label>
-                          Họ và tên
+                  <p>
+                    Nhập thông tin một người. Thông tin này sẽ được
+                    sử dụng cho tất cả ghế trong đơn đặt vé.
+                  </p>
 
-                          <input
-                            type="text"
-                            value={
-                              passenger.passengerName
-                            }
-                            onChange={(event) =>
-                              updatePassenger(
-                                index,
-                                "passengerName",
-                                event.target.value,
-                              )
-                            }
-                            placeholder="Nguyễn Văn A"
-                            required
-                          />
-                        </label>
+                  <div className="field-grid">
+                    <label>
+                      Họ và tên
 
-                        <label>
-                          Số điện thoại
+                      <input
+                        type="text"
+                        value={passengerInfo.passengerName}
+                        onChange={(event) =>
+                          setPassengerInfo((current) => ({
+                            ...current,
+                            passengerName: event.target.value,
+                          }))
+                        }
+                        placeholder="Nguyễn Văn A"
+                        required
+                      />
+                    </label>
 
-                          <input
-                            type="tel"
-                            value={
-                              passenger.passengerPhone
-                            }
-                            onChange={(event) =>
-                              updatePassenger(
-                                index,
-                                "passengerPhone",
-                                event.target.value,
-                              )
-                            }
-                            placeholder="09xxxxxxxx"
-                            required
-                          />
-                        </label>
-                      </div>
-                    </div>
-                  ),
-                )}
+                    <label>
+                      Số điện thoại
+
+                      <input
+                        type="tel"
+                        value={passengerInfo.passengerPhone}
+                        onChange={(event) =>
+                          setPassengerInfo((current) => ({
+                            ...current,
+                            passengerPhone: event.target.value,
+                          }))
+                        }
+                        placeholder="09xxxxxxxx"
+                        required
+                      />
+                    </label>
+                  </div>
+                </div>
               </div>
 
               <div className="booking-actions">
@@ -335,9 +305,8 @@ function BookingPage() {
         )}
 
         {createMutation.isError && (
-          <p>
-            Tạo booking thất bại:{" "}
-            {createMutation.error?.message}
+          <p style={{ color: "red" }}>
+            Tạo booking thất bại!
           </p>
         )}
                 

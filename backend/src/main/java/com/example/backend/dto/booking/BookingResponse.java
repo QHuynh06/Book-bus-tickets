@@ -19,9 +19,9 @@ public record BookingResponse(
     @com.fasterxml.jackson.annotation.JsonProperty("message")
     public String message() {
         return switch (status) {
-            case PENDING -> "Request received; awaiting admin confirmation. No official ticket yet.";
-            case CONFIRMED -> "Booking confirmed by admin.";
-            case CANCELLED -> "Booking cancelled.";
+            case PENDING -> "Đã nhận yêu cầu. Đợi xác nhận từ admin. Chưa có vé chính thức";
+            case CONFIRMED -> "Yêu cầu đã được xác nhận.";
+            case CANCELLED -> "Yêu cầu đã bị hủy.";
         };
     }
 }

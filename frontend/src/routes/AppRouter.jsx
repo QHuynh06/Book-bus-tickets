@@ -12,7 +12,6 @@ import AdminLayout from "../layouts/Admin/AdminLayout";
 import VehiclesPage from "../pages/admin/vihicle/VehiclesPage.jsx";
 import RoutesPage from "../pages/admin/routes/RoutesPage.jsx";
 import UsersPage from "../pages/admin/personal/UsersPage.jsx";
-import AdminBookingsPage from "../pages/admin/bookings/AdminBookingsPage.jsx";
 
 // ---- FE1: đăng nhập/đăng ký, trang chủ, tìm chuyến, hồ sơ, dashboard ----
 import { AuthProvider } from "../contexts/AuthContext";

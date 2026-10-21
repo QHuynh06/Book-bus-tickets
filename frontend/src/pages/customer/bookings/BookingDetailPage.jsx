@@ -132,10 +132,7 @@ function BookingDetailPage() {
         <div className="booking-detail-state error">
           <h2>Không thể tải booking</h2>
 
-          <p>
-            {bookingQuery.error?.message ??
-              "Đã xảy ra lỗi."}
-          </p>
+          <p> Vui lòng thử lại sau. </p>
 
           <button
             type="button"
@@ -179,10 +176,7 @@ function BookingDetailPage() {
         <div className="booking-detail-state error">
           <h2>Không thể tải thông tin chuyến xe</h2>
 
-          <p>
-            {tripQuery.error?.message ??
-              "Đã xảy ra lỗi."}
-          </p>
+          <p> Vui lòng thử lại sau. </p>
         </div>
       </div>
     );
@@ -434,7 +428,7 @@ function BookingDetailPage() {
                         </span>
 
                         <h3>
-                          Ghế {ticket.seatNumber}
+                          Mã ghế #{ticket.seatId}
                         </h3>
                       </div>
 
@@ -466,10 +460,10 @@ function BookingDetailPage() {
                       </div>
 
                       <div>
-                        <span>Seat ID</span>
+                        <span>Số ghế</span>
 
                         <strong>
-                          #{ticket.seatId}
+                          {ticket.seatNumber}
                         </strong>
                       </div>
 

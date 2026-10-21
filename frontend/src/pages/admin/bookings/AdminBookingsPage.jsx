@@ -123,7 +123,7 @@ function AdminBookingsPage() {
 
           <h2>Không thể tải dữ liệu</h2>
 
-          <p>{error?.message}</p>
+          <p>Vui lòng thử lại sau.</p>
 
           <button
             type="button"
@@ -173,7 +173,7 @@ function AdminBookingsPage() {
           {confirmMutation.isError && (
             <div className="action-error">
               Xác nhận booking thất bại:{" "}
-              {confirmMutation.error?.message}
+              <span>Vui lòng thử lại sau.</span>
             </div>
           )}
 

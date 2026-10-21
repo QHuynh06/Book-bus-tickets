@@ -67,11 +67,7 @@ function MyBookingsPage() {
         <div className="my-bookings-state error">
           <h2>Không thể tải danh sách booking</h2>
 
-          <p>
-            {error?.response?.data?.message ??
-              error?.message ??
-              "Đã xảy ra lỗi."}
-          </p>
+          <p> Vui lòng thử lại sau. </p>
 
           <button
             type="button"
@@ -212,7 +208,7 @@ function MyBookingsPage() {
                             }
                             key={ticket.id}
                           >
-                            {ticket.seatNumber}
+                            #{ticket.seatId}
                           </span>
                         ))}
                       </div>
