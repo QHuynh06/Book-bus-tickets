@@ -28,9 +28,9 @@ export default function Seat({ seat, selected = false, onClick }) {
         >
             <img src={image} alt="" className="seat__icon" />
 
-            <span className="seat__number">
-                {seat.seatNumber}
-            </span>
+            {/*<span className="seat__number">*/}
+            {/*    {seat.seatNumber}*/}
+            {/*</span>*/}
         </button>
     );
 }
