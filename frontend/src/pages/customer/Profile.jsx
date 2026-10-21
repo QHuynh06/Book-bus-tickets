@@ -23,12 +23,28 @@ export default function Profile() {
       <div className="card narrow">
         <h1>Hồ sơ của tôi</h1>
         {isPending && <Spinner />}
-        <p><strong>Tên đăng nhập:</strong> {user.username}</p>
-        <p><strong>Email:</strong> {user.email}</p>
-        <p><strong>Vai trò:</strong> <span className="badge">{user.role === "ADMIN" ? "Quản trị viên" : "Khách hàng"}</span></p>
-        <p><strong>Họ và tên:</strong> {user.fullName || "Chưa cập nhật"}</p>
-        <p><strong>Số điện thoại:</strong> {user.phone || "Chưa cập nhật"}</p>
-        <p className="muted">Chỉnh sửa hồ sơ sẽ có khi backend bổ sung API cập nhật (PUT /users/me).</p>
+        <p>
+          <strong>Tên đăng nhập:</strong> {user.username}
+        </p>
+        <p>
+          <strong>Email:</strong> {user.email}
+        </p>
+        <p>
+          <strong>Vai trò:</strong>{" "}
+          <span className="badge">
+            {user.role === "ADMIN" ? "Quản trị viên" : "Khách hàng"}
+          </span>
+        </p>
+        <p>
+          <strong>Họ và tên:</strong> {user.fullName || "Chưa cập nhật"}
+        </p>
+        <p>
+          <strong>Số điện thoại:</strong> {user.phone || "Chưa cập nhật"}
+        </p>
+        <p className="muted">
+          Chỉnh sửa hồ sơ sẽ có khi backend bổ sung API cập nhật (PUT
+          /users/me).
+        </p>
       </div>
     </div>
   );

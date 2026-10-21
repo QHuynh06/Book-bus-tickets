@@ -3,9 +3,21 @@ import SearchForm from "../../components/common/SearchForm";
 import Icon from "../../components/common/Icon";
 
 const FEATURES = [
-  { icon: "search", title: "Tìm chuyến nhanh", text: "Lọc theo giờ đi, giá, loại xe chỉ trong vài giây." },
-  { icon: "seat", title: "Chọn ghế trực quan", text: "Xem sơ đồ ghế và chọn đúng chỗ bạn thích." },
-  { icon: "ticket", title: "Quản lý vé dễ dàng", text: "Xem lại và hủy vé ngay trong mục Vé của tôi." },
+  {
+    icon: "search",
+    title: "Tìm chuyến nhanh",
+    text: "Lọc theo giờ đi, giá, loại xe chỉ trong vài giây.",
+  },
+  {
+    icon: "seat",
+    title: "Chọn ghế trực quan",
+    text: "Xem sơ đồ ghế và chọn đúng chỗ bạn thích.",
+  },
+  {
+    icon: "ticket",
+    title: "Quản lý vé dễ dàng",
+    text: "Xem lại và hủy vé ngay trong mục Vé của tôi.",
+  },
 ];
 
 export default function Home() {
@@ -26,7 +38,9 @@ export default function Home() {
         <div className="container">
           <h1>Đặt vé xe đường dài dễ dàng, nhanh chóng</h1>
           <p>Hàng trăm chuyến mỗi ngày trên các tuyến phổ biến toàn quốc.</p>
-          <div className="card"><SearchForm onSubmit={handleSearch} /></div>
+          <div className="card">
+            <SearchForm onSubmit={handleSearch} />
+          </div>
         </div>
       </section>
 
@@ -35,7 +49,9 @@ export default function Home() {
           {FEATURES.map((feature) => (
             <div className="card" key={feature.title}>
               <Icon name={feature.icon} size={32} className="blue" />
-              <p><strong>{feature.title}</strong></p>
+              <p>
+                <strong>{feature.title}</strong>
+              </p>
               <p className="muted">{feature.text}</p>
             </div>
           ))}

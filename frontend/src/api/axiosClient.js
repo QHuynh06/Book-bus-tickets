@@ -1,6 +1,7 @@
 
 import axios from "axios";
 
+// Khóa lưu phiên đăng nhập (dùng chung với utils/auth.js và contexts/AuthContext.jsx)
 const TOKEN_KEY = "accessToken";
 const ROLE_KEY = "userRole";
 const USER_KEY = "bus_ticket_user";

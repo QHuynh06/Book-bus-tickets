@@ -11,7 +11,9 @@ function ProtectedRoute({ role }) {
 
   // Đã đăng nhập nhưng sai quyền -> đưa về khu vực đúng của vai trò
   if (role && !hasRole(role)) {
-    return <Navigate to={hasRole("ADMIN") ? "/admin/dashboard" : "/"} replace />;
+    return (
+      <Navigate to={hasRole("ADMIN") ? "/admin/dashboard" : "/"} replace />
+    );
   }
 
   return <Outlet />;

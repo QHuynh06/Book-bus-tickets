@@ -53,6 +53,7 @@ export default function SearchTrips() {
 
       {!ready && <EmptyState title="Chọn tuyến để tìm chuyến">Hãy chọn điểm đi, điểm đến và ngày đi rồi bấm tìm.</EmptyState>}
       {ready && isPending && <Spinner label="Đang tìm chuyến..." />}
+      
       {isError && <ErrorState error={error} onRetry={refetch} title="Không tìm được chuyến xe" />}
 
       {trips?.length === 0 && (

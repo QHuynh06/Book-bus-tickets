@@ -26,55 +26,58 @@ import Profile from "../pages/customer/Profile";
 import Dashboard from "../pages/admin/Dashboard";
 
 function AppRouter() {
-    return (
-        <AuthProvider>
-        <BrowserRouter>
-            <Routes>
-                {/* Khu khách hàng: tất cả dùng chung khung có menu (MainLayout) */}
-                <Route element={<MainLayout />}>
-                    {/* FE1 */}
-                    <Route element={<Fe1Scope />}>
-                        <Route path="/" element={<Home />} />
-                        <Route path="/trips" element={<SearchTrips />} />
-                        <Route path="/login" element={<Login />} />
-                        <Route path="/register" element={<Register />} />
-                        <Route element={<ProtectedRoute />}>
-                            <Route path="/profile" element={<Profile />} />
-                        </Route>
-                    </Route>
+  return (
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          {/* Khu khách hàng: tất cả dùng chung khung có menu (MainLayout) */}
+          <Route element={<MainLayout />}>
+            {/* FE1 */}
+            <Route element={<Fe1Scope />}>
+              <Route path="/" element={<Home />} />
+              <Route path="/trips" element={<SearchTrips />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route element={<ProtectedRoute />}>
+                <Route path="/profile" element={<Profile />} />
+              </Route>
+            </Route>
 
-                    {/* FE2: chi tiết chuyến, chọn ghế (không cần đăng nhập để xem) */}
-                    <Route path="/trips/:tripId" element={<TripDetailsPage />} />
-                    <Route path="/trips/:tripId/seats" element={<SeatSelectPage />} />
+            {/* FE2: chi tiết chuyến, chọn ghế (không cần đăng nhập để xem) */}
+            <Route path="/trips/:tripId" element={<TripDetailsPage />} />
+            <Route path="/trips/:tripId/seats" element={<SeatSelectPage />} />
 
-                    {/* FE2/FE3: đặt vé và vé của tôi (cần đăng nhập khách hàng) */}
-                    <Route element={<ProtectedRoute role="CUSTOMER" />}>
-                        <Route path="/booking" element={<BookingPage />} />
-                        <Route path="/my-bookings" element={<MyBookingsPage />} />
-                        <Route path="/my-bookings/:bookingId" element={<BookingDetailPage />} />
-                    </Route>
+            {/* FE2/FE3: đặt vé và vé của tôi (cần đăng nhập khách hàng) */}
+            <Route element={<ProtectedRoute role="CUSTOMER" />}>
+              <Route path="/booking" element={<BookingPage />} />
+              <Route path="/my-bookings" element={<MyBookingsPage />} />
+              <Route
+                path="/my-bookings/:bookingId"
+                element={<BookingDetailPage />}
+              />
+            </Route>
 
-                    <Route element={<Fe1Scope />}>
-                        <Route path="*" element={<NotFound />} />
-                    </Route>
-                </Route>
+            <Route element={<Fe1Scope />}>
+              <Route path="*" element={<NotFound />} />
+            </Route>
+          </Route>
 
-                {/* Khu quản trị (cần quyền ADMIN) */}
-                <Route element={<ProtectedRoute role="ADMIN" />}>
-                    <Route path="/admin" element={<AdminLayout />}>
-                        <Route index element={<Navigate to="dashboard" replace />} />
-                        <Route path="dashboard" element={<Dashboard />} />
-                        <Route path="vehicles" element={<VehiclesPage />} />
-                        <Route path="routes" element={<RoutesPage />} />
-                        <Route path="users" element={<UsersPage />} />
-                        <Route path="trips" element={<AdminTripsPage />} />
-                        <Route path="bookings" element={<AdminBookingsPage />} />
-                    </Route>
-                </Route>
-            </Routes>
-        </BrowserRouter>
-        </AuthProvider>
-    );
+          {/* Khu quản trị (cần quyền ADMIN) */}
+          <Route element={<ProtectedRoute role="ADMIN" />}>
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route index element={<Navigate to="dashboard" replace />} />
+              <Route path="dashboard" element={<Dashboard />} />
+              <Route path="vehicles" element={<VehiclesPage />} />
+              <Route path="routes" element={<RoutesPage />} />
+              <Route path="users" element={<UsersPage />} />
+              <Route path="trips" element={<AdminTripsPage />} />
+              <Route path="bookings" element={<AdminBookingsPage />} />
+            </Route>
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
+  );
 }
 
 export default AppRouter;
