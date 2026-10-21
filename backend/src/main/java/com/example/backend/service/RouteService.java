@@ -21,14 +21,14 @@ public class RouteService {
 
     public Route getRouteById(Long id) {
         return routeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Route not found"));
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy tuyến đường"));
     }
 
     public Route createRoute(Route route) {
         if (routeRepository.existsByDepartureCityAndDestinationCity(
                 route.getDepartureCity(),
                 route.getDestinationCity())) {
-            throw new RuntimeException("Route already exists");
+            throw new RuntimeException("Tuyến đường đã tồn tại");
         }
 
         return routeRepository.save(route);
@@ -48,7 +48,7 @@ public class RouteService {
                         updatedRoute.getDepartureCity(),
                         updatedRoute.getDestinationCity())) {
 
-            throw new RuntimeException("Route already exists");
+            throw new RuntimeException("Tuyến đường đã tồn tại");
         }
 
         existingRoute.setDepartureCity(updatedRoute.getDepartureCity());

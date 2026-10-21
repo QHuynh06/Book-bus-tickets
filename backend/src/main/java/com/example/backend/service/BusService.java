@@ -34,7 +34,7 @@ public class BusService {
     public Bus getBusById(Long id) {
         return busRepository.findById(id)
                 .orElseThrow(() ->
-                        new RuntimeException("Bus not found"));
+                        new RuntimeException("Không tìm thấy xe"));
     }
 
     @Transactional
@@ -42,7 +42,7 @@ public class BusService {
         if (busRepository.existsByLicensePlate(
                 bus.getLicensePlate())) {
             throw new RuntimeException(
-                    "License plate already exists");
+                    "Biển số đã tồn tại");
         }
 
         int seatCount = bus.getSeatCount();
@@ -50,7 +50,7 @@ public class BusService {
                 && seatCount != 24
                 && seatCount != 36) {
             throw new IllegalArgumentException(
-                    "Seat count must be 12, 24 or 36");
+                    "Số ghế phải là 12, 24 hoặc 36");
         }
 
         Bus savedBus = busRepository.save(bus);

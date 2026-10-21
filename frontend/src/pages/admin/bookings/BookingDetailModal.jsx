@@ -46,7 +46,7 @@ function BookingDetailModal({
         <div className="detail-modal-header">
           <div>
             <span className="page-eyebrow">
-              BOOKING DETAIL
+              Chi tiết BOOKING 
             </span>
 
             <h2>{booking.bookingCode}</h2>
