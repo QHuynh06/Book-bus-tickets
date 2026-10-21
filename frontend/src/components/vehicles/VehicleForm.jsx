@@ -3,7 +3,7 @@ import { useState } from "react";
 const emptyForm = {
     plate: "",
     type: "",
-    seats: "",
+    seats: 12,
     active: true,
     description: "",
 };
@@ -17,7 +17,7 @@ export default function VehicleForm({ vehicle, onSubmit, onCancel, layout = "mod
         return {
             plate: vehicle.plate ?? "",
             type: vehicle.type ?? "",
-            seats: vehicle.seats ?? "",
+            seats: vehicle.seats ?? 12,
             active: vehicle.active ?? true,
             description: vehicle.description ?? "",
         };
@@ -28,7 +28,12 @@ export default function VehicleForm({ vehicle, onSubmit, onCancel, layout = "mod
 
         setForm((prev) => ({
             ...prev,
-            [name]: type === "checkbox" ? checked : value,
+            [name]:
+                type === "checkbox"
+                    ? checked
+                    : name === "seats"
+                        ? Number(value)
+                        : value,
         }));
     };
 
@@ -63,6 +68,7 @@ export default function VehicleForm({ vehicle, onSubmit, onCancel, layout = "mod
                     />
                     {layout === "page" && <small>Tối đa 20 ký tự</small>}
                 </div>
+
                 {/* Loại xe */}
                 <div className="form-group">
                     <label htmlFor="type">
@@ -79,6 +85,7 @@ export default function VehicleForm({ vehicle, onSubmit, onCancel, layout = "mod
                     />
                     {layout === "page" && <small>Tối đa 50 ký tự</small>}
                 </div>
+
                 {/* Số ghế */}
                 <div className="form-group">
                     <label htmlFor="seats">
@@ -91,9 +98,9 @@ export default function VehicleForm({ vehicle, onSubmit, onCancel, layout = "mod
                         onChange={handleChange}
                         required
                     >
-                        <option value="12">12 chỗ</option>
-                        <option value="24">24 chỗ</option>
-                        <option value="36">36 chỗ</option>
+                        <option value={12}>12 ghế</option>
+                        <option value={24}>24 ghế</option>
+                        <option value={36}>36 ghế</option>
                     </select>
                 </div>
 

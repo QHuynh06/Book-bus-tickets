@@ -1,6 +1,7 @@
 import "../../styles/fe1.css";
 import Spinner from "../../components/common/Spinner";
 import ErrorState from "../../components/common/ErrorState";
+import EmptyState from "../../components/common/EmptyState";
 import Icon from "../../components/common/Icon";
 import RouteLabel from "../../components/common/RouteLabel";
 import { useDashboard } from "../../queries/adminQueries";
@@ -101,13 +102,13 @@ function DashboardContent({ data }) {
             <EmptyState icon="calendar" title="Không có chuyến sắp tới" />
           ) : (
             <table>
-              <thead><tr><th>Tuyến</th><th>Khởi hành</th><th>Còn chỗ</th></tr></thead>
+              <thead><tr><th>Tuyến</th><th>Khởi hành</th><th>Số ghế</th></tr></thead>
               <tbody>
                 {upcomingTrips.map((trip) => (
                   <tr key={trip.id}>
                     <td><RouteLabel from={cityLabel(trip.route.departureCity)} to={cityLabel(trip.route.destinationCity)} /></td>
                     <td>{formatDateTime(trip.departureTime)}</td>
-                    <td>{trip.availableSeats ?? "-"}/{trip.bus.seatCount}</td>
+                    <td>{trip.bus?.seatCount ?? "-"} ghế</td>
                   </tr>
                 ))}
               </tbody>
@@ -123,12 +124,13 @@ function DashboardContent({ data }) {
             <EmptyState icon="ticket" title="Chưa có vé nào" />
           ) : (
             <table>
-              <thead><tr><th>Mã vé</th><th>Khách</th><th>Tổng tiền</th><th>Trạng thái</th></tr></thead>
+              <thead><tr><th>Mã vé</th><th>Hành khách</th><th>Tuyến</th><th>Tổng tiền</th><th>Trạng thái</th></tr></thead>
               <tbody>
                 {recentBookings.map((booking) => (
                   <tr key={booking.id}>
                     <td>{booking.bookingCode}</td>
                     <td>{booking.customerName}</td>
+                    <td>{booking.route ? `${cityLabel(booking.route.departureCity)} → ${cityLabel(booking.route.destinationCity)}` : "-"}</td>
                     <td>{formatPrice(booking.totalAmount)}</td>
                     <td><span className={`badge ${STATUS[booking.status]?.cls}`}>{STATUS[booking.status]?.label}</span></td>
                   </tr>

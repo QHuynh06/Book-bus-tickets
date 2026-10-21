@@ -150,10 +150,10 @@ function CreateTripForm({ onClose }) {
           value={form.status}
           onChange={handleChange}
         >
-          <option value="SCHEDULED">SCHEDULED</option>
-          <option value="DEPARTED">DEPARTED</option>
-          <option value="COMPLETED">COMPLETED</option>
-          <option value="CANCELLED">CANCELLED</option>
+          <option value="SCHEDULED">Nhận khách</option>
+          <option value="DEPARTED">Đã khởi hành</option>
+          <option value="COMPLETED">Đã hoàn thành</option>
+          <option value="CANCELLED">Đã hủy</option>
         </select>
       </div>
 

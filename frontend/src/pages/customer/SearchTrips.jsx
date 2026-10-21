@@ -22,6 +22,8 @@ export default function SearchTrips() {
   // DỮ LIỆU TỪ SERVER (server state) -> TanStack Query
   const { data: trips, isPending, isError, error, refetch } = useSearchTrips(from, to, date);
 
+  const ready = Boolean(from && to);
+
   // TRẠNG THÁI GIAO DIỆN (client state) -> useState
   const [filters, setFilters] = useState(DEFAULT_FILTERS);
   const [sortBy, setSortBy] = useState("time-asc");
@@ -45,11 +47,12 @@ export default function SearchTrips() {
       </div>
 
       <div className="row">
-        <h1>{from && to ? <RouteLabel from={cityLabel(from)} to={cityLabel(to)} /> : "Tất cả chuyến xe"}</h1>
+        <h1>{from && to ? <RouteLabel from={cityLabel(from)} to={cityLabel(to)} /> : "Tìm chuyến xe"}</h1>
         <span className="muted">{formatDate(`${date}T00:00:00`)}</span>
       </div>
 
-      {isPending && <Spinner label="Đang tìm chuyến..." />}
+      {!ready && <EmptyState title="Chọn tuyến để tìm chuyến">Hãy chọn điểm đi, điểm đến và ngày đi rồi bấm tìm.</EmptyState>}
+      {ready && isPending && <Spinner label="Đang tìm chuyến..." />}
       {isError && <ErrorState error={error} onRetry={refetch} title="Không tìm được chuyến xe" />}
 
       {trips?.length === 0 && (

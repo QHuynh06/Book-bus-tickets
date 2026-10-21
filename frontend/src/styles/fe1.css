@@ -1,6 +1,7 @@
 /* CSS của FE1 - mọi luật đều nằm trong .fe1 để KHÔNG ảnh hưởng trang FE2/FE3 và Admin layout của main.
    .fe1       : phạm vi áp dụng (trang khách trong MainLayout và trang Dashboard)
-   .fe1-page  : khung toàn trang của MainLayout (nền xám, menu - nội dung - chân trang) */
+   .fe1-page  : khung toàn trang của MainLayout (nền xám, menu - nội dung - chân trang)
+   Lưu ý: MainLayout chỉ gắn .fe1 cho Navbar/Footer; các trang FE1 được bọc .fe1 bằng Fe1Scope. */
 
 /* ---- variables ---- */
 .fe1 { --blue: #1a73e8;
@@ -12,7 +13,9 @@
 /* ---- base ---- */
 .fe1-page { background: #f4f6fb; color: #1c2333; min-height: 100vh; }
 .fe1-page { display: flex; flex-direction: column; }
-.fe1-page > main { flex: 1; }
+.fe1-page > .fe1-body { flex: 1; }
+/* Trang FE2/FE3 vốn tự đặt min-height: 100vh; trong khung có menu thì không cần nữa */
+.fe1-body > main { min-height: 0 !important; }
 .fe1 h1 { font-size: 1.6rem; margin-bottom: 8px; }
 .fe1 h2 { font-size: 1.1rem; margin-bottom: 12px; }
 .fe1 p { margin-bottom: 8px; }
