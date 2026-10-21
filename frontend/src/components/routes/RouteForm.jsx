@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { CITIES } from "../../utils/cities";
 
 const emptyForm = {
     departureCity: "",
@@ -42,27 +43,38 @@ export default function RouteForm({ route, onCancel, onSubmit }) {
             <div className="route-form-fields">
                 <div className="route-form-group">
                     <label htmlFor="departureCity">Thành phố đi *</label>
-                    <input
+                    <select
                         id="departureCity"
                         name="departureCity"
                         value={form.departureCity}
                         onChange={handleChange}
-                        placeholder="Nhập thành phố đi"
-                        maxLength={100}
                         required
-                    />
+                    >
+                        <option value="">Chọn thành phố đi</option>
+                        {CITIES.map((city) => (
+                            <option key={city.value} value={city.value}>
+                                {city.label}
+                            </option>
+                        ))}
+                    </select>
                 </div>
+
                 <div className="route-form-group">
                     <label htmlFor="destinationCity">Thành phố đến *</label>
-                    <input
+                    <select
                         id="destinationCity"
                         name="destinationCity"
                         value={form.destinationCity}
                         onChange={handleChange}
-                        placeholder="Nhập thành phố đến"
-                        maxLength={100}
                         required
-                    />
+                    >
+                        <option value="">Chọn thành phố đến</option>
+                        {CITIES.map((city) => (
+                            <option key={city.value} value={city.value}>
+                                {city.label}
+                            </option>
+                        ))}
+                    </select>
                 </div>
                 <div className="route-form-group">
                     <label htmlFor="departureStation">Bến đi *</label>
