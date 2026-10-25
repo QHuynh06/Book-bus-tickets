@@ -14,6 +14,8 @@ backendJ2EE.drawio.svg
 
 # Ignore ALL backend resources
 /backend/src/main/resources/**
+/backend/Requirement_J2EE.md
+/docs/
 
 # Agent
 AGENT_CHANGELOG.md
@@ -25,5 +27,6 @@ booking-test.postman_collection.json
 
 # IntelliJ IDEA
 .idea/
+
 
 

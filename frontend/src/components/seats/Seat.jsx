@@ -1,8 +1,9 @@
 import "./Seat.css";
 import {unavailable, selectedBox, armchair} from "../../assets";
+import { isSeatSelectable } from "./seatClickHandler";
 
-export default function Seat({ seat, selected = false, onClick }) {
-    const isUnavailable = !["ACTIVE", "AVAILABLE"].includes(seat.status);
+export default function Seat({ seat, selected, onToggleSeat }) {
+    const isUnavailable = !isSeatSelectable(seat);
 
     let image = armchair;
 
@@ -14,7 +15,7 @@ export default function Seat({ seat, selected = false, onClick }) {
 
     const handleClick = () => {
         if (isUnavailable) return;
-        onClick?.(seat);
+        onToggleSeat(seat.id);
     };
 
     return (
@@ -23,14 +24,10 @@ export default function Seat({ seat, selected = false, onClick }) {
             className={`seat ${isUnavailable ? "seat--unavailable" : ""}`}
             onClick={handleClick}
             disabled={isUnavailable}
-            aria-label={`Ghế ${seat.seatNumber}`}
+            aria-label={isUnavailable ? "Ghế không khả dụng" : selected ? "Ghế đang chọn" : "Ghế còn trống"}
             aria-pressed={!isUnavailable && selected}
         >
             <img src={image} alt="" className="seat__icon" />
-
-            {/*<span className="seat__number">*/}
-            {/*    {seat.seatNumber}*/}
-            {/*</span>*/}
         </button>
     );
 }

@@ -1,42 +1,59 @@
 import { useMemo, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import SeatMap from "../../../components/seats/SeatMap";
-import { useTripSeats } from "../../../hooks/useSeats";
-import { useTrip } from "../../../hooks/useTrips";
+import { isSeatSelectable, toggleSeatSelection } from "../../../components/seats/seatClickHandler";
+import { useTripSeats, useTrip } from "../../../hooks";
 import "./SeatsPage.css";
 
 const currencyFormatter = new Intl.NumberFormat("vi-VN");
 
+// Booking nó chỉ nhận id; nếu cần chi tiết ghế phải query lại trips
+function normalizeSeat(seat) {
+    return {
+        ...seat,
+        id: Number(seat.id ?? seat.seatId ?? seat.seat_id),
+        seatNumber: seat.seatNumber ?? seat.seat_number,
+        floorNumber: Number(seat.floorNumber ?? seat.floor_number),
+        rowNumber: Number(seat.rowNumber ?? seat.row_number),
+        columnNumber: Number(seat.columnNumber ?? seat.column_number),
+        status: seat.status === "ACTIVE" ? "AVAILABLE" : seat.status,
+    };
+}
+
 export default function SeatSelectPage() {
     const { tripId } = useParams();
+    return <TripSeatSelection key={tripId} tripId={tripId} />;
+}
+
+function TripSeatSelection({ tripId }) {
     const navigate = useNavigate();
     const tripQuery = useTrip(tripId);
     const seatsQuery = useTripSeats(tripId);
-    const [selection, setSelection] = useState({ tripId, seatIds: [] });
-    const selectedSeats = selection.tripId === tripId ? selection.seatIds : [];
-    const setSelectedSeats = (update) => {
-        setSelection((current) => {
-            const currentSeatIds = current.tripId === tripId ? current.seatIds : [];
-            return {
-                tripId,
-                seatIds: typeof update === "function" ? update(currentSeatIds) : update,
-            };
-        });
-    };
-
+    const [selectedSeatIds, setSelectedSeats] = useState([]);
     const seats = useMemo(
-        () => (seatsQuery.data ?? []).map((seat) => ({
-            ...seat,
-            id: seat.seatId,
-            status: seat.status === "AVAILABLE" ? "ACTIVE" : seat.status,
-        })),
+        () => (seatsQuery.data ?? []).map(normalizeSeat),
         [seatsQuery.data],
     );
+    const hasInvalidSeats = seats.some((seat) =>
+        [seat.id, seat.floorNumber, seat.rowNumber, seat.columnNumber]
+            .some((value) => !Number.isSafeInteger(value) || value < 1),
+    ) || new Set(seats.map((seat) => seat.id)).size !== seats.length
+        || new Set(seats.map((seat) =>
+            `${seat.floorNumber}:${seat.rowNumber}:${seat.columnNumber}`,
+        )).size !== seats.length;
+    const availableSeatIds = new Set(seats.filter(isSeatSelectable).map((seat) => seat.id));
+    const selectedSeats = selectedSeatIds.filter((id) => availableSeatIds.has(id));
+    const hasUnavailableSelection = selectedSeats.length !== selectedSeatIds.length;
     const total = selectedSeats.length * (Number(tripQuery.data?.price) || 0);
-    const layout = useMemo(() => ({
-        floors: Math.max(1, ...seats.map((seat) => Number(seat.floorNumber) || 1)),
-        columnsPerFloor: Math.max(1, ...seats.map((seat) => Number(seat.columnNumber) || 1)),
-    }), [seats]);
+    const canContinue = selectedSeats.length > 0 && !hasUnavailableSelection && !seatsQuery.isError;
+
+    const onToggleSeat = (seatId) => {
+        if (!availableSeatIds.has(seatId)) return;
+        setSelectedSeats((current) => toggleSeatSelection(
+            current.filter((id) => availableSeatIds.has(id)),
+            seatId,
+        ));
+    };
 
     if (!tripId) {
         return (
@@ -51,7 +68,7 @@ export default function SeatSelectPage() {
         return <main className="seats-page" role="status">Đang tải sơ đồ ghế...</main>;
     }
 
-    if (tripQuery.isError || seatsQuery.isError) {
+    if ((tripQuery.isError && !tripQuery.data) || (seatsQuery.isError && !seatsQuery.data)) {
         const error = tripQuery.error ?? seatsQuery.error;
         return (
             <main className="seats-page">
@@ -64,7 +81,17 @@ export default function SeatSelectPage() {
         );
     }
 
+    if (hasInvalidSeats) {
+        return (
+            <main className="seats-page">
+                <p role="alert">Dữ liệu vị trí ghế không hợp lệ. Vui lòng thử tải lại.</p>
+                <button type="button" onClick={() => seatsQuery.refetch()}>Thử lại</button>
+            </main>
+        );
+    }
+
     const handleContinue = () => {
+        if (!canContinue) return;
         navigate("/booking", {
             state: {
                 tripId: Number(tripId),
@@ -84,16 +111,26 @@ export default function SeatSelectPage() {
                 </p>
             </header>
 
+            {seatsQuery.isError && (
+                <p role="alert">Chưa cập nhật được trạng thái ghế. Vui lòng chờ hoặc thử lại.</p>
+            )}
+            {hasUnavailableSelection && (
+                <div role="alert">
+                    <p>Một số ghế đã chọn không còn khả dụng. Vui lòng bỏ các ghế này để tiếp tục.</p>
+                    <button type="button" onClick={() => setSelectedSeats(selectedSeats)}>
+                        Bỏ ghế không còn khả dụng
+                    </button>
+                </div>
+            )}
+
             <div className="seats-page__wrapper">
                 {seats.length === 0 ? (
                     <p role="status">Chuyến xe chưa có sơ đồ ghế.</p>
                 ) : (
                     <SeatMap
                         seats={seats}
-                        seatCount={seats.length}
-                        layout={layout}
                         selectedSeats={selectedSeats}
-                        setSelectedSeats={setSelectedSeats}
+                        onToggleSeat={onToggleSeat}
                     />
                 )}
 
@@ -106,7 +143,7 @@ export default function SeatSelectPage() {
                     </div>
                     <button
                         type="button"
-                        disabled={selectedSeats.length === 0}
+                        disabled={!canContinue}
                         onClick={handleContinue}
                     >
                         Tiếp tục

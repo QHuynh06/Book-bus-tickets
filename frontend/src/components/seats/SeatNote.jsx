@@ -8,7 +8,7 @@ export default function SeatNote() {
             <h3>Chú thích</h3>
             <div className="legend-item">
                 <img src={unavailable} alt="" />
-                <span>Không bán</span>
+                <span>Không khả dụng</span>
             </div>
             <div className="legend-item">
                 <img src={selectedBox} alt="" />

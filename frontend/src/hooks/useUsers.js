@@ -3,24 +3,20 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import {
-  getAdminUserById,
-  getAdminUsers,
-  updateAdminUserRole,
-} from "../api/adminUserApi";
+import { adminUserApi } from "../api/adminUserApi";
 import { queryKeys } from "./queryKeys";
 
 export function useUsers() {
   return useQuery({
     queryKey: queryKeys.users.all,
-    queryFn: async () => (await getAdminUsers()).data,
+    queryFn: adminUserApi.getAdminUsers,
   });
 }
 
 export function useUser(userId) {
   return useQuery({
     queryKey: queryKeys.users.detail(userId),
-    queryFn: async () => (await getAdminUserById(userId)).data,
+    queryFn: () => adminUserApi.getAdminUserById(userId),
     enabled: Boolean(userId),
   });
 }
@@ -28,14 +24,11 @@ export function useUser(userId) {
 export function useUpdateUserRole() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ userId, role }) => updateAdminUserRole(userId, role),
-    onSuccess: async (response, { userId }) =>
-      Promise.all([
-        queryClient.invalidateQueries({ queryKey: queryKeys.users.all }),
-        queryClient.setQueryData(
-          queryKeys.users.detail(userId),
-          response.data,
-        ),
-      ]),
+    mutationFn: ({ userId, role }) =>
+      adminUserApi.updateAdminUserRole(userId, role),
+    onSuccess: (user, { userId }) => {
+      queryClient.setQueryData(queryKeys.users.detail(userId), user);
+      return queryClient.invalidateQueries({ queryKey: queryKeys.users.all });
+    },
   });
 }

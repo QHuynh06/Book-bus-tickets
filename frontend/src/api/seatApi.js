@@ -1,4 +1,6 @@
 import axiosClient from "./axiosClient";
 
-export const getTripSeats = (tripId) =>
-  axiosClient.get(`/trips/${tripId}/seats`);
+export const seatApi = {
+  getTripSeats: async (tripId) =>
+    (await axiosClient.get(`/trips/${tripId}/seats`)).data,
+};
