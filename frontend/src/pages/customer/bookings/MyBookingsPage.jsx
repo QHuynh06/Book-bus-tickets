@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 
@@ -7,6 +7,7 @@ import { getMyBookings } from "../../../api/bookingApi";
 import "./MyBookingsPage.css";
 
 const PAGE_SIZE = 10;
+const EMPTY_BOOKINGS = [];
 
 function sortBookingsByIdDescending(bookings) {
   return [...bookings].sort(
@@ -63,7 +64,7 @@ function MyBookingsPage() {
 
   const rawBookings = Array.isArray(data?.data)
     ? data.data
-    : [];
+    : EMPTY_BOOKINGS;
 
   // Sắp xếp booking theo ID từ lớn đến nhỏ.
   const sortedBookings = useMemo(
@@ -79,12 +80,6 @@ function MyBookingsPage() {
 
   // Bảo đảm trang hiện tại vẫn hợp lệ khi dữ liệu thay đổi.
   const safeCurrentPage = Math.min(currentPage, totalPages);
-
-  useEffect(() => {
-    if (currentPage !== safeCurrentPage) {
-      setCurrentPage(safeCurrentPage);
-    }
-  }, [currentPage, safeCurrentPage]);
 
   // Chỉ lấy tối đa 10 booking của trang hiện tại.
   const paginatedBookings = useMemo(() => {

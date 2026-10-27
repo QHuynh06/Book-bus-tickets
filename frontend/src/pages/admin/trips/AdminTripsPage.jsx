@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import {
   useDeleteAdminTrip,
   useAdminTrips,
@@ -155,20 +155,22 @@ function AdminTripsPage() {
     Math.ceil(filteredTrips.length / PAGE_SIZE),
   );
 
+  const safeCurrentPage = Math.min(currentPage, totalPages);
+
   const paginatedTrips = useMemo(() => {
-    const startIndex = (currentPage - 1) * PAGE_SIZE;
+    const startIndex = (safeCurrentPage - 1) * PAGE_SIZE;
 
     return filteredTrips.slice(
       startIndex,
       startIndex + PAGE_SIZE,
     );
-  }, [filteredTrips, currentPage]);
+  }, [filteredTrips, safeCurrentPage]);
 
   // Hiển thị tối đa 5 nút số trang.
   const pageNumbers = useMemo(() => {
     const startPage = Math.max(
       1,
-      Math.min(currentPage - 2, totalPages - 4),
+      Math.min(safeCurrentPage - 2, totalPages - 4),
     );
 
     const endPage = Math.min(
@@ -180,19 +182,7 @@ function AdminTripsPage() {
       { length: endPage - startPage + 1 },
       (_, index) => startPage + index,
     );
-  }, [currentPage, totalPages]);
-
-  // Thay đổi tìm kiếm hoặc trạng thái thì quay về trang 1.
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [search, statusFilter]);
-
-  // Tránh ở lại trang không còn dữ liệu sau khi xóa hoặc lọc.
-  useEffect(() => {
-    if (currentPage > totalPages) {
-      setCurrentPage(totalPages);
-    }
-  }, [currentPage, totalPages]);
+  }, [safeCurrentPage, totalPages]);
 
   const handleDelete = (tripId) => {
     const confirmed = window.confirm(
@@ -373,18 +363,20 @@ function AdminTripsPage() {
                 type="text"
                 placeholder="Tìm theo tuyến, biển số hoặc ID..."
                 value={search}
-                onChange={(event) =>
-                  setSearch(event.target.value)
-                }
+                onChange={(event) => {
+                  setSearch(event.target.value);
+                  setCurrentPage(1);
+                }}
               />
             </div>
 
             <select
               className="status-filter"
               value={statusFilter}
-              onChange={(event) =>
-                setStatusFilter(event.target.value)
-              }
+              onChange={(event) => {
+                setStatusFilter(event.target.value);
+                setCurrentPage(1);
+              }}
             >
               {STATUS_OPTIONS.map((option) => (
                 <option
@@ -554,9 +546,9 @@ function AdminTripsPage() {
             <div className="table-pagination">
               <span className="pagination-info">
                 Hiển thị{" "}
-                {(currentPage - 1) * PAGE_SIZE + 1}–
+                {(safeCurrentPage - 1) * PAGE_SIZE + 1}–
                 {Math.min(
-                  currentPage * PAGE_SIZE,
+                  safeCurrentPage * PAGE_SIZE,
                   filteredTrips.length,
                 )}{" "}
                 / {filteredTrips.length} chuyến
@@ -566,7 +558,7 @@ function AdminTripsPage() {
                 <button
                   type="button"
                   className="pagination-btn"
-                  disabled={currentPage === 1}
+                  disabled={safeCurrentPage === 1}
                   onClick={() =>
                     setCurrentPage((page) => page - 1)
                   }
@@ -579,12 +571,10 @@ function AdminTripsPage() {
                     key={page}
                     type="button"
                     className={`pagination-btn ${
-                      currentPage === page ? "active" : ""
+                      safeCurrentPage === page ? "active" : ""
                     }`}
                     aria-current={
-                      currentPage === page
-                        ? "page"
-                        : undefined
+                      safeCurrentPage === page ? "page" : undefined
                     }
                     onClick={() => setCurrentPage(page)}
                   >
@@ -595,7 +585,7 @@ function AdminTripsPage() {
                 <button
                   type="button"
                   className="pagination-btn"
-                  disabled={currentPage === totalPages}
+                  disabled={safeCurrentPage === totalPages}
                   onClick={() =>
                     setCurrentPage((page) => page + 1)
                   }

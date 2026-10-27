@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import {
   useMutation,
   useQuery,
@@ -18,6 +18,7 @@ import BookingDetailModal from "./BookingDetailModal";
 import "./AdminBookingsPage.css";
 
 const PAGE_SIZE = 30;
+const EMPTY_BOOKINGS = [];
 
 function sortBookingsByIdDescending(bookings) {
   return [...bookings].sort(
@@ -55,7 +56,7 @@ function AdminBookingsPage() {
     },
   });
 
-  const bookings = data?.data ?? [];
+  const bookings = data?.data ?? EMPTY_BOOKINGS;
 
   // Sắp xếp ID booking từ lớn đến nhỏ.
   const sortedBookings = useMemo(
@@ -112,20 +113,22 @@ function AdminBookingsPage() {
     Math.ceil(filteredBookings.length / PAGE_SIZE),
   );
 
+  const safeCurrentPage = Math.min(currentPage, totalPages);
+
   const paginatedBookings = useMemo(() => {
-    const startIndex = (currentPage - 1) * PAGE_SIZE;
+    const startIndex = (safeCurrentPage - 1) * PAGE_SIZE;
 
     return filteredBookings.slice(
       startIndex,
       startIndex + PAGE_SIZE,
     );
-  }, [filteredBookings, currentPage]);
+  }, [filteredBookings, safeCurrentPage]);
 
   // Hiển thị tối đa 5 nút số trang.
   const pageNumbers = useMemo(() => {
     const startPage = Math.max(
       1,
-      Math.min(currentPage - 2, totalPages - 4),
+      Math.min(safeCurrentPage - 2, totalPages - 4),
     );
 
     const endPage = Math.min(
@@ -137,19 +140,7 @@ function AdminBookingsPage() {
       { length: endPage - startPage + 1 },
       (_, index) => startPage + index,
     );
-  }, [currentPage, totalPages]);
-
-  // Thay đổi tìm kiếm hoặc trạng thái thì quay về trang 1.
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [search, statusFilter]);
-
-  // Điều chỉnh nếu số trang giảm sau khi lọc hoặc cập nhật dữ liệu.
-  useEffect(() => {
-    if (currentPage > totalPages) {
-      setCurrentPage(totalPages);
-    }
-  }, [currentPage, totalPages]);
+  }, [safeCurrentPage, totalPages]);
 
   const handleConfirm = (bookingId) => {
     const confirmed = window.confirm(
@@ -219,9 +210,15 @@ function AdminBookingsPage() {
         <section className="bookings-card">
           <BookingFilters
             search={search}
-            setSearch={setSearch}
+            setSearch={(value) => {
+              setSearch(value);
+              setCurrentPage(1);
+            }}
             statusFilter={statusFilter}
-            setStatusFilter={setStatusFilter}
+            setStatusFilter={(value) => {
+              setStatusFilter(value);
+              setCurrentPage(1);
+            }}
             resultCount={filteredBookings.length}
           />
 
@@ -244,9 +241,9 @@ function AdminBookingsPage() {
             <div className="table-pagination">
               <span className="pagination-info">
                 Hiển thị{" "}
-                {(currentPage - 1) * PAGE_SIZE + 1}–
+                {(safeCurrentPage - 1) * PAGE_SIZE + 1}–
                 {Math.min(
-                  currentPage * PAGE_SIZE,
+                  safeCurrentPage * PAGE_SIZE,
                   filteredBookings.length,
                 )}{" "}
                 / {filteredBookings.length} booking
@@ -256,7 +253,7 @@ function AdminBookingsPage() {
                 <button
                   type="button"
                   className="pagination-btn"
-                  disabled={currentPage === 1}
+                  disabled={safeCurrentPage === 1}
                   onClick={() =>
                     setCurrentPage((page) => page - 1)
                   }
@@ -269,12 +266,10 @@ function AdminBookingsPage() {
                     key={page}
                     type="button"
                     className={`pagination-btn ${
-                      currentPage === page ? "active" : ""
+                      safeCurrentPage === page ? "active" : ""
                     }`}
                     aria-current={
-                      currentPage === page
-                        ? "page"
-                        : undefined
+                      safeCurrentPage === page ? "page" : undefined
                     }
                     onClick={() => setCurrentPage(page)}
                   >
@@ -285,7 +280,7 @@ function AdminBookingsPage() {
                 <button
                   type="button"
                   className="pagination-btn"
-                  disabled={currentPage === totalPages}
+                  disabled={safeCurrentPage === totalPages}
                   onClick={() =>
                     setCurrentPage((page) => page + 1)
                   }
