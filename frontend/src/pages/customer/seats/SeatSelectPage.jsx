@@ -9,13 +9,22 @@ const currencyFormatter = new Intl.NumberFormat("vi-VN");
 
 // Booking nó chỉ nhận id; nếu cần chi tiết ghế phải query lại trips
 function normalizeSeat(seat) {
+    const normalizePosition = (value) =>
+        value == null ? null : Number(value);
+
     return {
         ...seat,
         id: Number(seat.id ?? seat.seatId ?? seat.seat_id),
         seatNumber: seat.seatNumber ?? seat.seat_number,
-        floorNumber: Number(seat.floorNumber ?? seat.floor_number),
-        rowNumber: Number(seat.rowNumber ?? seat.row_number),
-        columnNumber: Number(seat.columnNumber ?? seat.column_number),
+        floorNumber: normalizePosition(
+            seat.floorNumber ?? seat.floor_number,
+        ),
+        rowNumber: normalizePosition(
+            seat.rowNumber ?? seat.row_number,
+        ),
+        columnNumber: normalizePosition(
+            seat.columnNumber ?? seat.column_number,
+        ),
         status: seat.status === "ACTIVE" ? "AVAILABLE" : seat.status,
     };
 }
@@ -28,7 +37,12 @@ export default function SeatSelectPage() {
 function TripSeatSelection({ tripId }) {
     const navigate = useNavigate();
     const tripQuery = useTrip(tripId);
-    const seatsQuery = useTripSeats(tripId);
+    const seatsQuery = useTripSeats(tripId, {
+        refetchInterval: 5_000,
+        refetchIntervalInBackground: false,
+        refetchOnWindowFocus: "always",
+        refetchOnReconnect: "always",
+    });
     const [selectedSeatIds, setSelectedSeats] = useState([]);
     const seats = useMemo(
         () => (seatsQuery.data ?? []).map(normalizeSeat),
@@ -41,8 +55,11 @@ function TripSeatSelection({ tripId }) {
         || new Set(seats.map((seat) =>
             `${seat.floorNumber}:${seat.rowNumber}:${seat.columnNumber}`,
         )).size !== seats.length;
+    // Danh sách ghế available tính lại theo dữ liệu API mới nhất.
     const availableSeatIds = new Set(seats.filter(isSeatSelectable).map((seat) => seat.id));
+    // Lọc lại những ghế user đã chọn theo điều kiện status: available
     const selectedSeats = selectedSeatIds.filter((id) => availableSeatIds.has(id));
+    // so sánh ghế user chọn và số ghế available trong đó có khớp k
     const hasUnavailableSelection = selectedSeats.length !== selectedSeatIds.length;
     const total = selectedSeats.length * (Number(tripQuery.data?.price) || 0);
     const canContinue = selectedSeats.length > 0 && !hasUnavailableSelection && !seatsQuery.isError;
@@ -116,9 +133,16 @@ function TripSeatSelection({ tripId }) {
             )}
             {hasUnavailableSelection && (
                 <div role="alert">
-                    <p>Một số ghế đã chọn không còn khả dụng. Vui lòng bỏ các ghế này để tiếp tục.</p>
-                    <button type="button" onClick={() => setSelectedSeats(selectedSeats)}>
-                        Bỏ ghế không còn khả dụng
+                    <p>Có ghế đã được người khác đặt, vui lòng chọn lại.</p>
+
+                    <button
+                        type="button"
+                        onClick={() => {
+                            alert("Xác nhận bỏ ghế không còn khả dụng!");
+                            setSelectedSeats(selectedSeats);
+                        }}
+                    >
+                        Xác nhận
                     </button>
                 </div>
             )}
@@ -127,11 +151,7 @@ function TripSeatSelection({ tripId }) {
                 {seats.length === 0 ? (
                     <p role="status">Chuyến xe chưa có sơ đồ ghế.</p>
                 ) : (
-                    <SeatMap
-                        seats={seats}
-                        selectedSeats={selectedSeats}
-                        onToggleSeat={onToggleSeat}
-                    />
+                    <SeatMap seats={seats} selectedSeats={selectedSeats} onToggleSeat={onToggleSeat} />
                 )}
 
                 <hr />

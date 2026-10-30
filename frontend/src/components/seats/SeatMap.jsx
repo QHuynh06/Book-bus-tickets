@@ -3,11 +3,7 @@ import SeatNote from "./SeatNote";
 
 import "./SeatMap.css";
 
-export default function SeatMap({
-    seats,
-    selectedSeats,
-    onToggleSeat,
-}) {
+export default function SeatMap({ seats, selectedSeats, onToggleSeat,}) {
     const floors = new Map();
     for (const seat of seats) {
         if (!floors.has(seat.floorNumber)) floors.set(seat.floorNumber, []);
