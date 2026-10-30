@@ -1,9 +1,12 @@
 import axiosClient from "./axiosClient";
 
-export const getAdminUsers = () => axiosClient.get("/admin/users");
+export const adminUserApi = {
+  getAdminUsers: async () =>
+    (await axiosClient.get("/admin/users")).data,
 
-export const getAdminUserById = (userId) =>
-  axiosClient.get(`/admin/users/${userId}`);
+  getAdminUserById: async (id) =>
+    (await axiosClient.get(`/admin/users/${id}`)).data,
 
-export const updateAdminUserRole = (userId, role) =>
-  axiosClient.put(`/admin/users/${userId}/role`, { role });
+  updateAdminUserRole: async (id, role) =>
+    (await axiosClient.put(`/admin/users/${id}/role`, { role })).data,
+};

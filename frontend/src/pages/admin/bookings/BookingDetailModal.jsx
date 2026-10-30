@@ -1,6 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
-
-import { getTripById } from "../../../api/tripApi";
+import { useTrip } from "../../../hooks/useTrips";
 
 import {
   formatDateTime,
@@ -15,14 +13,10 @@ function BookingDetailModal({
   isConfirming,
 }) {
   const {
-    data: tripResponse,
+    data: trip,
     isPending: tripLoading,
-  } = useQuery({
-    queryKey: ["trip", booking.tripId],
-    queryFn: () => getTripById(booking.tripId),
-  });
+  } = useTrip(booking.tripId);
 
-  const trip = tripResponse?.data;
   const tickets = booking.tickets ?? [];
 
   const passengerGroups = tickets.reduce((groups, ticket) => {

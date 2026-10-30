@@ -1,7 +1,6 @@
 import { Link, useParams } from "react-router-dom";
 import Card from "../../../components/common/Card.jsx";
-import { useTrip } from "../../../hooks/useTrips";
-import { useTripSeats } from "../../../hooks/useSeats";
+import { useTripSeats, useTrip } from "../../../hooks";
 import "./TripDetailsPage.css";
 import {display, plugin, snowflake, water, wifi, toilet} from "../../../assets"
 

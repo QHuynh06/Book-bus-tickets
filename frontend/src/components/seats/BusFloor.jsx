@@ -6,13 +6,11 @@ import "./BusFloor.css";
 export default function BusFloor({
     floorNumber,
     seats,
-    selectedSeats = [],
-    onSeatClick,
-    rowsPerFloor = 1,
+    selectedSeats,
+    onToggleSeat,
 }) {
-    const maxColumn = Math.max(1, ...seats.map((seat) => seat.columnNumber));
-    const maxRow = Math.max(rowsPerFloor, ...seats.map((seat) => seat.rowNumber));
-    const title = floorNumber === 1 ? "Tầng dưới" : "Tầng trên";
+    const title = floorNumber === 1 ? "Tầng dưới"
+        : floorNumber === 2 ? "Tầng trên" : `Tầng ${floorNumber}`;
 
     return (
         <section className="bus-floor" aria-label={title}>
@@ -28,13 +26,7 @@ export default function BusFloor({
                     />
                 </div>
 
-                <div
-                    className="bus-layout"
-                    style={{
-                        gridTemplateColumns: `repeat(${maxColumn}, 34px)`,
-                        gridTemplateRows: `repeat(${maxRow}, 46px)`,
-                    }}
-                >
+                <div className="bus-layout">
                     {seats.map((seat) => {
                         const isSelected = selectedSeats.includes(seat.id);
 
@@ -47,7 +39,7 @@ export default function BusFloor({
                                     gridColumn: seat.columnNumber,
                                 }}
                             >
-                                <Seat seat={seat} selected={isSelected} onClick={onSeatClick} />
+                                <Seat seat={seat} selected={isSelected} onToggleSeat={onToggleSeat} />
                             </div>
                         );
                     })}

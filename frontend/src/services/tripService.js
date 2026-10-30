@@ -1,4 +1,4 @@
-import apiClient from "./apiClient";
+import { tripApi } from "../api/tripApi";
 
 /*
  * API của backend:
@@ -13,11 +13,9 @@ import apiClient from "./apiClient";
 
 export async function searchTrips({ from, to, date }) {
   if (!from || !to) throw new Error("Vui lòng chọn cả điểm đi và điểm đến để tìm chuyến.");
-  const response = await apiClient.get("/trips", { params: { from, to, date } });
-  return response.data;
+  return tripApi.searchTrips({ from, to, date });
 }
 
 export async function getTripById(id) {
-  const response = await apiClient.get(`/trips/${id}`);
-  return response.data;
+  return tripApi.getTripById(id);
 }

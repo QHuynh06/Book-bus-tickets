@@ -65,7 +65,7 @@ export default function Sidebar() {
           <div className="name">
             {user?.fullName || user?.username || "Quản trị"}
           </div>
-          <div className="role">Quản Trị viên</div>
+          {/*<div className="role">Quản Trị viên</div>*/}
         </div>
 
         <div className="sidebar-actions">

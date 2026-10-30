@@ -1,21 +1,18 @@
 import axiosClient from "./axiosClient";
 
-export const getAdminTrips = () => {
-  return axiosClient.get("/admin/trips");
-};
+export const adminTripApi = {
+  getAdminTrips: async () =>
+    (await axiosClient.get("/admin/trips")).data,
 
-export const getAdminTripById = (tripId) => {
-  return axiosClient.get(`/admin/trips/${tripId}`);
-};
+  getAdminTripById: async (id) =>
+    (await axiosClient.get(`/admin/trips/${id}`)).data,
 
-export const createAdminTrip = (trip) => {
-  return axiosClient.post("/admin/trips", trip);
-};
+  createAdminTrip: async (trip) =>
+    (await axiosClient.post("/admin/trips", trip)).data,
 
-export const updateAdminTrip = (tripId, trip) => {
-  return axiosClient.put(`/admin/trips/${tripId}`, trip);
-};
+  updateAdminTrip: async (id, trip) =>
+    (await axiosClient.put(`/admin/trips/${id}`, trip)).data,
 
-export const deleteAdminTrip = (tripId) => {
-  return axiosClient.delete(`/admin/trips/${tripId}`);
+  deleteAdminTrip: async (id) =>
+    (await axiosClient.delete(`/admin/trips/${id}`)).data,
 };

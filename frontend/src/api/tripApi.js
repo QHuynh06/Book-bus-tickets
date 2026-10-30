@@ -1,15 +1,11 @@
 import axiosClient from "./axiosClient";
 
-export const searchTrips = ({
-  from, to, date,
-}) => {
-  return axiosClient.get("/trips", {
-    params: {
-      from, to, date,
-    },
-  });
-};
+export const tripApi = {
+  searchTrips: async ({ from, to, date }) =>
+    (await axiosClient.get("/trips", {
+      params: { from, to, date },
+    })).data,
 
-export const getTripById = (tripId) => {
-  return axiosClient.get(`/trips/${tripId}`);
+  getTripById: async (id) =>
+    (await axiosClient.get(`/trips/${id}`)).data,
 };
