@@ -1,9 +1,7 @@
-import { useMutation } from "@tanstack/react-query";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { createBooking } from "../../../api/bookingApi";
 import { useTrip } from "../../../hooks/useTrips";
-
+import { useCreateBooking } from "../../../hooks/useBookings";
 import "./BookingPage.css";
 
 function BookingPage() {
@@ -22,15 +20,7 @@ function BookingPage() {
 
   const tripQuery = useTrip(tripId);
 
-  const createMutation = useMutation({
-    mutationFn: createBooking,
-
-    onSuccess: (response) => {
-      const booking = response.data;
-
-      navigate(`/my-bookings/${booking.id}`);
-    },
-  });
+  const createMutation = useCreateBooking();
 
   if (!tripId || !Array.isArray(selectedSeatIds)) {
     return (
@@ -117,7 +107,13 @@ function BookingPage() {
       passengers,
     };
 
-    createMutation.mutate(payload);
+    createMutation.mutate(payload, {
+      onSuccess: (response) => {
+        const booking = response.data;
+
+        navigate(`/my-bookings/${booking.id}`);
+      },
+    });
   };
 
   return (

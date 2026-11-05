@@ -1,14 +1,8 @@
 import { useMemo, useState } from "react";
 import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
-
-import {
-  confirmAdminBooking,
-  getAllBookings,
-} from "../../../api/adminBookingApi";
+  useAdminBookings,
+  useConfirmAdminBooking,
+} from "../../../hooks/useAdminBookings";
 
 import BookingStats from "./BookingStats";
 import BookingFilters from "./BookingFilters";
@@ -27,7 +21,6 @@ function sortBookingsByIdDescending(bookings) {
 }
 
 function AdminBookingsPage() {
-  const queryClient = useQueryClient();
 
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("ALL");
@@ -39,22 +32,9 @@ function AdminBookingsPage() {
     isPending,
     isError,
     refetch,
-  } = useQuery({
-    queryKey: ["admin", "bookings"],
-    queryFn: getAllBookings,
-  });
+  } = useAdminBookings();
 
-  const confirmMutation = useMutation({
-    mutationFn: confirmAdminBooking,
-
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["admin", "bookings"],
-      });
-
-      setSelectedBooking(null);
-    },
-  });
+  const confirmMutation = useConfirmAdminBooking();
 
   const bookings = data?.data ?? EMPTY_BOOKINGS;
 
@@ -151,7 +131,11 @@ function AdminBookingsPage() {
       return;
     }
 
-    confirmMutation.mutate(bookingId);
+    confirmMutation.mutate(bookingId, {
+      onSuccess: () => {
+        setSelectedBooking(null);
+      },
+    });
   };
 
   if (isPending) {

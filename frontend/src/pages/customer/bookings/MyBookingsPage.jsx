@@ -1,8 +1,6 @@
 import { useMemo, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
-
-import { getMyBookings } from "../../../api/bookingApi";
+import { useMyBookings } from "../../../hooks/useBookings";
 
 import "./MyBookingsPage.css";
 
@@ -57,10 +55,7 @@ function MyBookingsPage() {
     isPending,
     isError,
     refetch,
-  } = useQuery({
-    queryKey: ["bookings", "me"],
-    queryFn: getMyBookings,
-  });
+  } = useMyBookings();
 
   const rawBookings = Array.isArray(data?.data)
     ? data.data
