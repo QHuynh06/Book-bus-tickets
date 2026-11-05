@@ -1,0 +1,1212 @@
+﻿7440114 | 2026-10-30 | ESMo7 | refactor: code style
+ backend/src/main/resources/application.properties  |   1 +
+ frontend/package-lock.json                         | 180 ++++++++++-----------
+ frontend/src/components/seats/SeatMap.jsx          |   6 +-
+ frontend/src/hooks/useSeats.js                     |  20 ++-
+ frontend/src/layouts/Admin/admin.css               | 149 ++++++++++++++++-
+ .../src/pages/customer/seats/SeatSelectPage.jsx    |  44 +++--
+ .../src/pages/customer/trips/TripDetailsPage.jsx   |   3 +-
+ 7 files changed, 288 insertions(+), 115 deletions(-)
+
+67dfb16 | 2026-10-27 | QHuynh06 | fix ph├ón trang
+ .../src/pages/admin/bookings/AdminBookingsPage.jsx | 51 ++++++++++-----------
+ frontend/src/pages/admin/trips/AdminTripsPage.jsx  | 52 +++++++++-------------
+ .../src/pages/customer/bookings/MyBookingsPage.jsx | 11 ++---
+ 3 files changed, 47 insertions(+), 67 deletions(-)
+
+1e86186 | 2026-10-25 | ESMo7 | refactor(frontend): api and hook of fullstack2
+ .gitignore                                         |  3 +
+ frontend/src/api/adminBusApi.js                    | 23 +++---
+ frontend/src/api/adminRouteApi.js                  | 23 +++---
+ frontend/src/api/adminTripApi.js                   | 27 +++----
+ frontend/src/api/adminUserApi.js                   | 13 +--
+ frontend/src/api/seatApi.js                        |  6 +-
+ frontend/src/api/tripApi.js                        | 20 ++---
+ frontend/src/components/seats/BusFloor.jsx         | 20 ++---
+ frontend/src/components/seats/Seat.css             |  8 --
+ frontend/src/components/seats/Seat.jsx             | 13 ++-
+ frontend/src/components/seats/SeatMap.jsx          | 53 +++---------
+ frontend/src/components/seats/SeatNote.jsx         |  2 +-
+ frontend/src/components/seats/seatClickHandler.js  | 18 ++---
+ frontend/src/components/seats/seatLayout.js        | 15 ----
+ frontend/src/hooks/useBuses.js                     | 18 ++---
+ frontend/src/hooks/useRoutes.js                    | 18 ++---
+ frontend/src/hooks/useSeats.js                     |  8 +-
+ frontend/src/hooks/useTrips.js                     | 41 +++++-----
+ frontend/src/hooks/useUsers.js                     | 25 +++---
+ frontend/src/layouts/Admin/Sidebar.jsx             |  2 +-
+ .../pages/admin/bookings/BookingDetailModal.jsx    | 14 +---
+ .../src/pages/customer/seats/SeatSelectPage.jsx    | 93 +++++++++++++++-------
+ frontend/src/queries/tripQueries.js                | 20 +----
+ frontend/src/services/tripService.js               |  8 +-
+ 24 files changed, 212 insertions(+), 279 deletions(-)
+
+dbd841a | 2026-10-21 | ESMo7 | update translate
+ backend/src/main/resources/application.properties  |  2 +-
+ frontend/.env.example                              |  3 +++
+ frontend/src/components/routes/RouteForm.jsx       | 28 +++++++++++++++-------
+ frontend/src/components/seats/Seat.jsx             |  6 ++---
+ frontend/src/pages/admin/routes/RoutesPage.jsx     |  1 +
+ frontend/src/pages/admin/trips/CreateTripForm.jsx  |  8 +++----
+ frontend/src/pages/admin/trips/EditTripForm.jsx    |  8 +++----
+ .../src/pages/customer/seats/SeatSelectPage.jsx    |  2 +-
+ 8 files changed, 37 insertions(+), 21 deletions(-)
+
+d719476 | 2026-10-21 | QHuynh06 | th├¬m ph├ón trang
+ .../src/pages/admin/bookings/AdminBookingsPage.css |  67 +++++
+ .../src/pages/admin/bookings/AdminBookingsPage.jsx | 148 ++++++++--
+ frontend/src/pages/admin/trips/AdminTripsPage.css  |  67 +++++
+ frontend/src/pages/admin/trips/AdminTripsPage.jsx  | 228 ++++++++++++---
+ .../src/pages/customer/bookings/MyBookingsPage.jsx | 319 ++++++++++++++-------
+ 5 files changed, 663 insertions(+), 166 deletions(-)
+
+3b97279 | 2026-10-21 | QHuynh06 | format datetime & trip price
+ .../src/pages/admin/bookings/AdminBookingsPage.jsx |   2 +-
+ frontend/src/pages/admin/trips/AdminTripsPage.jsx  |  42 +++-
+ frontend/src/pages/admin/trips/CreateTripForm.jsx  | 237 ++++++++++++++++-----
+ frontend/src/pages/admin/trips/EditTripForm.jsx    | 220 +++++++++++++++----
+ 4 files changed, 396 insertions(+), 105 deletions(-)
+
+1d5c74c | 2026-10-21 | QHuynh06 | sß╗¡a th├┤ng tin hiß╗ân thß╗ï v├⌐, chß╗ù ngß╗ôi cß╗ºa booking, adminBooking
+ .../backend/dto/booking/BookingResponse.java       |   6 +-
+ .../src/pages/admin/bookings/AdminBookingsPage.css |  25 ++++
+ .../src/pages/admin/bookings/AdminBookingsPage.jsx |   4 +-
+ .../pages/admin/bookings/BookingDetailModal.jsx    | 103 ++++++++++---
+ frontend/src/pages/admin/bookings/BookingTable.jsx |  20 ++-
+ .../pages/customer/bookings/BookingDetailPage.jsx  |  16 +-
+ .../src/pages/customer/bookings/BookingPage.css    |   5 +-
+ .../src/pages/customer/bookings/BookingPage.jsx    | 165 +++++++++------------
+ .../src/pages/customer/bookings/MyBookingsPage.jsx |   8 +-
+ .../src/pages/customer/seats/SeatSelectPage.jsx    |   2 +-
+ frontend/src/routes/AppRouter.jsx                  |   1 -
+ 11 files changed, 206 insertions(+), 149 deletions(-)
+
+1179b89 | 2026-10-21 | QHuynh06 | Delete GIAI_THICH_CODE.md
+ frontend/GIAI_THICH_CODE.md | 61 ---------------------------------------------
+ 1 file changed, 61 deletions(-)
+
+44a474c | 2026-10-21 | QHuynh06 | th├¬m api cho chß╗ënh sß╗¡a th├┤ng tin ng╞░ß╗¥i d├╣ng + password
+ .../example/backend/controller/UserController.java | 41 +++++++++++++
+ .../backend/dto/user/ChangePasswordRequest.java    | 14 +++++
+ .../backend/dto/user/UpdateUserRequest.java        |  9 +++
+ .../com/example/backend/service/UserService.java   | 71 +++++++++++++++++++++-
+ backend/src/main/resources/application.properties  |  2 +-
+ .../pages/admin/bookings/BookingDetailModal.jsx    |  2 +-
+ 6 files changed, 136 insertions(+), 3 deletions(-)
+
+b6c05ac | 2026-10-21 | ESMo7 | update & fix issue
+ frontend/.env.example                              |   4 +-
+ frontend/.gitignore                                |   5 +
+ frontend/GIAI_THICH_CODE.md                        |  61 +++++++++
+ frontend/index.html                                |   2 +-
+ frontend/src/api/axiosClient.js                    |  63 +++++++--
+ frontend/src/assets/ic_dashboard.svg               |   1 +
+ frontend/src/assets/ic_ticket.svg                  |   1 +
+ frontend/src/assets/ic_trip.svg                    |   1 +
+ frontend/src/components/common/Alert.jsx           |   4 +
+ frontend/src/components/common/EmptyState.jsx      |  11 ++
+ frontend/src/components/common/ErrorState.jsx      |  11 ++
+ frontend/src/components/common/Icon.jsx            | 141 +++++++++++++++++++++
+ frontend/src/components/common/RouteLabel.jsx      |   8 ++
+ frontend/src/components/common/SearchForm.jsx      |  52 ++++++++
+ frontend/src/components/common/Spinner.jsx         |   3 +
+ frontend/src/components/common/TripFilters.jsx     |  65 ++++++++++
+ frontend/src/components/layout/Footer.jsx          |   3 +
+ frontend/src/components/layout/Navbar.jsx          |   2 +-
+ frontend/src/components/vehicles/VehicleForm.jsx   |  19 ++-
+ frontend/src/hooks/useAuth.js                      |  11 ++
+ frontend/src/layouts/Admin/Header.jsx              |   5 +-
+ frontend/src/layouts/Admin/Sidebar.jsx             |  39 +++++-
+ frontend/src/layouts/Admin/admin.css               |  33 ++++-
+ frontend/src/layouts/Fe1Scope.jsx                  |  11 ++
+ frontend/src/layouts/MainLayout.jsx                |  13 +-
+ frontend/src/pages/NotFound.jsx                    |  13 ++
+ frontend/src/pages/admin/Dashboard.jsx             |   8 +-
+ frontend/src/pages/admin/trips/CreateTripForm.jsx  |   8 +-
+ frontend/src/pages/auth/Login.jsx                  |  68 ++++++++++
+ frontend/src/pages/auth/Register.jsx               |  77 +++++++++++
+ frontend/src/pages/customer/Home.jsx               |  23 +---
+ frontend/src/pages/customer/Profile.jsx            |  68 +++-------
+ frontend/src/pages/customer/SearchTrips.jsx        |   7 +-
+ .../src/pages/customer/trips/TripDetailsPage.jsx   |  13 +-
+ frontend/src/queries/adminQueries.js               |   9 ++
+ frontend/src/queries/tripQueries.js                |  21 +++
+ frontend/src/routes/AppRouter.jsx                  |  98 +++++++-------
+ frontend/src/routes/ProtectedRoute.jsx             |  12 +-
+ frontend/src/services/adminService.js              |  96 +++++++++++---
+ frontend/src/services/apiClient.js                 |  38 +-----
+ frontend/src/services/authService.js               |  72 ++---------
+ frontend/src/services/mockData.js                  | 114 -----------------
+ frontend/src/services/tripService.js               |  51 ++------
+ frontend/src/styles/fe1.css                        |   7 +-
+ frontend/src/utils/format.js                       |  37 ++++++
+ frontend/src/utils/tripFilters.js                  |  57 +++++++++
+ 46 files changed, 1027 insertions(+), 439 deletions(-)
+
+473bf13 | 2026-10-21 | ESMo7 | tao acc admim 1 lan
+ .../example/backend/config/DataInitializer.java    | 43 ++++++++++++++++++++++
+ 1 file changed, 43 insertions(+)
+
+352a2e3 | 2026-10-20 | Nguyß╗àn D╞░╞íng Khang | Delete Local instance MySQL80.session.sql
+ Local instance MySQL80.session.sql | 1 -
+ 1 file changed, 1 deletion(-)
+
+7fb4dd3 | 2026-10-20 | Nguyß╗àn D╞░╞íng Khang | Delete frontend/GIAI_THICH_CODE.md
+ frontend/GIAI_THICH_CODE.md | 61 ---------------------------------------------
+ 1 file changed, 61 deletions(-)
+
+22148f5 | 2026-10-20 | ESMo7 | update: translate to VNese messages on backend
+ .../com/example/backend/service/AuthService.java   |  8 ++--
+ .../example/backend/service/BookingService.java    | 46 +++++++++++-----------
+ .../com/example/backend/service/BusService.java    |  6 +--
+ .../com/example/backend/service/RouteService.java  |  6 +--
+ .../com/example/backend/service/SeatService.java   |  2 +-
+ .../com/example/backend/service/TripService.java   | 30 +++++++-------
+ .../com/example/backend/service/UserService.java   |  6 +--
+ frontend/src/components/vehicles/VehicleForm.jsx   | 17 ++++----
+ frontend/src/pages/admin/Dashboard.jsx             |  1 -
+ 9 files changed, 61 insertions(+), 61 deletions(-)
+
+ec3a13f | 2026-10-20 | Nguyß╗àn D╞░╞íng Khang | update full pj
+ .gitattributes                                     |    2 +
+ .gitignore                                         |   29 +
+ .vscode/settings.json                              |   19 +
+ PHAN_CHIA_CONG_VIEC_WEBSITE_DAT_VE_XE_4_TUAN.docx  |  Bin 0 -> 65820 bytes
+ README.md                                          | 1775 ++++++++++++
+ backend/.gitattributes                             |    2 +
+ backend/.gitignore                                 |   40 +
+ backend/.mvn/wrapper/maven-wrapper.properties      |    3 +
+ backend/mvnw                                       |  295 ++
+ backend/mvnw.cmd                                   |  189 ++
+ backend/pom.xml                                    |  111 +
+ .../com/example/backend/BackendApplication.java    |   13 +
+ .../com/example/backend/ServletInitializer.java    |   13 +
+ .../java/com/example/backend/config/JwtConfig.java |   52 +
+ .../com/example/backend/config/PasswordConfig.java |   15 +
+ .../com/example/backend/config/SecurityConfig.java |  118 +
+ .../backend/controller/AdminBookingController.java |   38 +
+ .../controller/AdminDashboardController.java       |   25 +
+ .../backend/controller/AdminUserController.java    |   55 +
+ .../example/backend/controller/AuthController.java |   52 +
+ .../backend/controller/BookingController.java      |   98 +
+ .../example/backend/controller/BusController.java  |   49 +
+ .../backend/controller/PublicTripController.java   |   49 +
+ .../backend/controller/RouteController.java        |   49 +
+ .../example/backend/controller/TripController.java |   50 +
+ .../example/backend/controller/UserController.java |   36 +
+ .../backend/dto/admin/AdminDashboardResponse.java  |   40 +
+ .../com/example/backend/dto/auth/AuthResponse.java |   90 +
+ .../com/example/backend/dto/auth/LoginRequest.java |   33 +
+ .../example/backend/dto/auth/RegisterRequest.java  |   70 +
+ .../backend/dto/booking/BookingResponse.java       |   27 +
+ .../backend/dto/booking/CreateBookingRequest.java  |   14 +
+ .../backend/dto/booking/PassengerDetails.java      |   12 +
+ .../backend/dto/booking/TicketResponse.java        |   18 +
+ .../example/backend/dto/error/ConflictSeat.java    |    3 +
+ .../example/backend/dto/error/ErrorResponse.java   |   15 +
+ .../example/backend/dto/seat/SeatAvailability.java |   20 +
+ .../com/example/backend/dto/seat/SeatResponse.java |   14 +
+ .../backend/dto/user/UpdateUserRoleRequest.java    |   21 +
+ .../com/example/backend/dto/user/UserResponse.java |   56 +
+ .../java/com/example/backend/entity/Booking.java   |   93 +
+ .../main/java/com/example/backend/entity/Bus.java  |  128 +
+ .../java/com/example/backend/entity/Route.java     |  159 ++
+ .../main/java/com/example/backend/entity/Seat.java |   81 +
+ .../java/com/example/backend/entity/Ticket.java    |   93 +
+ .../main/java/com/example/backend/entity/Trip.java |  152 ++
+ .../main/java/com/example/backend/entity/User.java |  135 +
+ .../com/example/backend/enums/BookingStatus.java   |    7 +
+ .../java/com/example/backend/enums/BusStatus.java  |    6 +
+ .../main/java/com/example/backend/enums/Role.java  |    6 +
+ .../com/example/backend/enums/RouteStatus.java     |    6 +
+ .../java/com/example/backend/enums/SeatStatus.java |    6 +
+ .../java/com/example/backend/enums/SeatType.java   |    8 +
+ .../com/example/backend/enums/TicketStatus.java    |    7 +
+ .../java/com/example/backend/enums/TripStatus.java |    8 +
+ .../backend/exception/BadRequestException.java     |   12 +
+ .../backend/exception/ForbiddenException.java      |   12 +
+ .../backend/exception/GlobalExceptionHandler.java  |  175 ++
+ .../exception/ResourceNotFoundException.java       |   12 +
+ .../backend/exception/SeatConflictException.java   |   13 +
+ .../backend/repository/BookingRepository.java      |   24 +
+ .../example/backend/repository/BusRepository.java  |   13 +
+ .../backend/repository/RouteRepository.java        |   19 +
+ .../example/backend/repository/SeatRepository.java |   24 +
+ .../backend/repository/TicketRepository.java       |   71 +
+ .../example/backend/repository/TripRepository.java |   61 +
+ .../example/backend/repository/UserRepository.java |   17 +
+ .../backend/service/AdminBookingService.java       |   67 +
+ .../backend/service/AdminDashboardService.java     |   38 +
+ .../com/example/backend/service/AuthService.java   |   86 +
+ .../example/backend/service/BookingService.java    |  408 +++
+ .../com/example/backend/service/BusService.java    |  127 +
+ .../com/example/backend/service/JwtService.java    |   59 +
+ .../backend/service/OccupiedSeatConstraint.java    |   30 +
+ .../com/example/backend/service/RouteService.java  |   69 +
+ .../com/example/backend/service/SeatService.java   |   49 +
+ .../com/example/backend/service/TripService.java   |  181 ++
+ .../com/example/backend/service/UserService.java   |   59 +
+ .../backend/service/BookingServiceTest.java        |  923 +++++++
+ .../service/OccupiedSeatConstraintTest.java        |   34 +
+ .../example/backend/service/SeatServiceTest.java   |   88 +
+ database_schema.sql                                |  515 ++++
+ frontend/.env.example                              |    2 +
+ frontend/.gitignore                                |   29 +
+ frontend/GIAI_THICH_CODE.md                        |   61 +
+ frontend/README.md                                 |   16 +
+ frontend/eslint.config.js                          |   21 +
+ frontend/index.html                                |   13 +
+ frontend/package-lock.json                         | 2839 ++++++++++++++++++++
+ frontend/package.json                              |   30 +
+ frontend/public/favicon.svg                        |    1 +
+ frontend/public/icons.svg                          |   24 +
+ frontend/src/App.css                               |  184 ++
+ frontend/src/App.jsx                               |    7 +
+ frontend/src/api/adminBookingApi.js                |   19 +
+ frontend/src/api/adminBusApi.js                    |   17 +
+ frontend/src/api/adminRouteApi.js                  |   17 +
+ frontend/src/api/adminTripApi.js                   |   21 +
+ frontend/src/api/adminUserApi.js                   |    9 +
+ frontend/src/api/axiosClient.js                    |   49 +
+ frontend/src/api/bookingApi.js                     |   23 +
+ frontend/src/api/seatApi.js                        |    4 +
+ frontend/src/api/tripApi.js                        |   15 +
+ frontend/src/assets/armchair.png                   |  Bin 0 -> 10500 bytes
+ frontend/src/assets/bus.png                        |  Bin 0 -> 23522 bytes
+ frontend/src/assets/chair_color.png                |  Bin 0 -> 9762 bytes
+ frontend/src/assets/display.png                    |  Bin 0 -> 7857 bytes
+ frontend/src/assets/eyes.png                       |  Bin 0 -> 14721 bytes
+ frontend/src/assets/hero.png                       |  Bin 0 -> 13057 bytes
+ frontend/src/assets/ic_bus.svg                     |    1 +
+ frontend/src/assets/ic_dashboard.svg               |    1 +
+ frontend/src/assets/ic_person.svg                  |    1 +
+ frontend/src/assets/ic_profile_circle.svg          |    1 +
+ frontend/src/assets/ic_ticket.svg                  |    1 +
+ frontend/src/assets/ic_trip.svg                    |    1 +
+ frontend/src/assets/index.js                       |    9 +
+ frontend/src/assets/modify.svg                     |    1 +
+ frontend/src/assets/plugin.png                     |  Bin 0 -> 30747 bytes
+ frontend/src/assets/react.svg                      |    1 +
+ frontend/src/assets/route.svg                      |    1 +
+ frontend/src/assets/seat_avail.svg                 |    7 +
+ frontend/src/assets/selected_box.png               |  Bin 0 -> 12692 bytes
+ frontend/src/assets/selected_cir.png               |  Bin 0 -> 22818 bytes
+ frontend/src/assets/snowflake.png                  |  Bin 0 -> 31262 bytes
+ frontend/src/assets/toilets.png                    |  Bin 0 -> 16107 bytes
+ frontend/src/assets/trash.svg                      |    1 +
+ frontend/src/assets/unavailable.png                |  Bin 0 -> 19182 bytes
+ frontend/src/assets/user.svg                       |    1 +
+ frontend/src/assets/vite.svg                       |    1 +
+ frontend/src/assets/volang.png                     |  Bin 0 -> 27386 bytes
+ frontend/src/assets/water.png                      |  Bin 0 -> 13471 bytes
+ frontend/src/assets/wifi.png                       |  Bin 0 -> 21183 bytes
+ .../components/UsersManagement/UserRoleBadge.jsx   |   10 +
+ .../src/components/UsersManagement/UserRow.jsx     |   54 +
+ .../src/components/UsersManagement/UserTable.jsx   |   48 +
+ frontend/src/components/common/Alert.jsx           |    4 +
+ frontend/src/components/common/Button.jsx          |   14 +
+ frontend/src/components/common/Card.jsx            |   19 +
+ .../src/components/common/DeleteConfirmModal.jsx   |   65 +
+ frontend/src/components/common/EmptyState.jsx      |   11 +
+ frontend/src/components/common/ErrorState.jsx      |   11 +
+ frontend/src/components/common/Icon.jsx            |  141 +
+ frontend/src/components/common/PageHeader.jsx      |   47 +
+ frontend/src/components/common/RouteLabel.jsx      |    8 +
+ frontend/src/components/common/SearchForm.jsx      |   52 +
+ frontend/src/components/common/Spinner.jsx         |    3 +
+ frontend/src/components/common/StatusBadge.jsx     |   14 +
+ frontend/src/components/common/TripCard.jsx        |   38 +
+ frontend/src/components/common/TripFilters.jsx     |   65 +
+ frontend/src/components/common/common.css          |  211 ++
+ frontend/src/components/layout/Footer.jsx          |    3 +
+ frontend/src/components/layout/Navbar.jsx          |   41 +
+ frontend/src/components/routes/Route.css           |  180 ++
+ frontend/src/components/routes/RouteForm.jsx       |  149 +
+ frontend/src/components/routes/RouteRow.jsx        |   52 +
+ frontend/src/components/routes/RouteTable.jsx      |   58 +
+ frontend/src/components/seats/BusFloor.css         |   52 +
+ frontend/src/components/seats/BusFloor.jsx         |   58 +
+ frontend/src/components/seats/Seat.css             |   41 +
+ frontend/src/components/seats/Seat.jsx             |   36 +
+ frontend/src/components/seats/SeatMap.css          |   21 +
+ frontend/src/components/seats/SeatMap.jsx          |   60 +
+ frontend/src/components/seats/SeatNote.css         |   35 +
+ frontend/src/components/seats/SeatNote.jsx         |   23 +
+ frontend/src/components/seats/seatClickHandler.js  |   13 +
+ frontend/src/components/seats/seatLayout.js        |   15 +
+ frontend/src/components/vehicles/Vehicle.css       |  177 ++
+ frontend/src/components/vehicles/VehicleForm.jsx   |  161 ++
+ frontend/src/components/vehicles/VehicleModal.jsx  |   46 +
+ frontend/src/components/vehicles/VehicleRow.jsx    |   53 +
+ frontend/src/components/vehicles/VehicleTable.jsx  |   52 +
+ frontend/src/contexts/AuthContext.jsx              |   57 +
+ frontend/src/hooks/index.js                        |   26 +
+ frontend/src/hooks/queryKeys.js                    |   26 +
+ frontend/src/hooks/useAuth.js                      |   11 +
+ frontend/src/hooks/useBuses.js                     |   66 +
+ frontend/src/hooks/useRoutes.js                    |   66 +
+ frontend/src/hooks/useSeats.js                     |   11 +
+ frontend/src/hooks/useTrips.js                     |   95 +
+ frontend/src/hooks/useUsers.js                     |   41 +
+ frontend/src/index.css                             |   80 +
+ frontend/src/layouts/Admin/AdminLayout.jsx         |   21 +
+ frontend/src/layouts/Admin/Header.jsx              |   13 +
+ frontend/src/layouts/Admin/Sidebar.jsx             |   72 +
+ frontend/src/layouts/Admin/admin.css               |  245 ++
+ frontend/src/layouts/Fe1Scope.jsx                  |   11 +
+ frontend/src/layouts/MainLayout.jsx                |   17 +
+ frontend/src/main.jsx                              |   21 +
+ frontend/src/pages/NotFound.jsx                    |   13 +
+ frontend/src/pages/admin/Dashboard.jsx             |  147 +
+ .../src/pages/admin/bookings/AdminBookingsPage.css |  738 +++++
+ .../src/pages/admin/bookings/AdminBookingsPage.jsx |  201 ++
+ .../pages/admin/bookings/BookingDetailModal.jsx    |  255 ++
+ .../src/pages/admin/bookings/BookingFilters.jsx    |   54 +
+ frontend/src/pages/admin/bookings/BookingStats.jsx |   67 +
+ frontend/src/pages/admin/bookings/BookingTable.jsx |  125 +
+ frontend/src/pages/admin/bookings/bookingUtils.js  |   32 +
+ .../src/pages/admin/personal/UserDetailScreen.jsx  |   43 +
+ frontend/src/pages/admin/personal/UsersPage.css    |  335 +++
+ frontend/src/pages/admin/personal/UsersPage.jsx    |   51 +
+ .../src/pages/admin/routes/RouteCreateScreen.jsx   |   16 +
+ .../src/pages/admin/routes/RouteDetailScreen.jsx   |   68 +
+ .../src/pages/admin/routes/RouteEditScreen.jsx     |   21 +
+ frontend/src/pages/admin/routes/RouteScreens.css   |  229 ++
+ frontend/src/pages/admin/routes/RoutesPage.jsx     |  158 ++
+ frontend/src/pages/admin/trips/AdminTripsPage.css  |  663 +++++
+ frontend/src/pages/admin/trips/AdminTripsPage.jsx  |  500 ++++
+ frontend/src/pages/admin/trips/CreateTripForm.jsx  |  188 ++
+ frontend/src/pages/admin/trips/EditTripForm.jsx    |  212 ++
+ .../pages/admin/vihicle/VehicleCreateScreen.jsx    |   21 +
+ .../pages/admin/vihicle/VehicleDetailScreen.jsx    |   87 +
+ .../src/pages/admin/vihicle/VehicleEditScreen.jsx  |   22 +
+ .../src/pages/admin/vihicle/VehicleScreens.css     |  269 ++
+ frontend/src/pages/admin/vihicle/VehiclesPage.jsx  |  157 ++
+ frontend/src/pages/auth/Login.jsx                  |   68 +
+ frontend/src/pages/auth/Register.jsx               |   77 +
+ frontend/src/pages/customer/Home.jsx               |   46 +
+ frontend/src/pages/customer/Profile.jsx            |   35 +
+ frontend/src/pages/customer/SearchTrips.jsx        |   93 +
+ .../pages/customer/bookings/BookingDetailPage.css  |  402 +++
+ .../pages/customer/bookings/BookingDetailPage.jsx  |  555 ++++
+ .../src/pages/customer/bookings/BookingPage.css    |  273 ++
+ .../src/pages/customer/bookings/BookingPage.jsx    |  349 +++
+ .../customer/bookings/CancelBookingButton.jsx      |   59 +
+ .../src/pages/customer/bookings/MyBookingsPage.css |  295 ++
+ .../src/pages/customer/bookings/MyBookingsPage.jsx |  240 ++
+ .../src/pages/customer/seats/SeatSelectPage.jsx    |  118 +
+ frontend/src/pages/customer/seats/SeatsPage.css    |   92 +
+ .../src/pages/customer/trips/TripDetailsPage.css   |  510 ++++
+ .../src/pages/customer/trips/TripDetailsPage.jsx   |  224 ++
+ frontend/src/queries/adminQueries.js               |    9 +
+ frontend/src/queries/tripQueries.js                |   21 +
+ frontend/src/routes/AppRouter.jsx                  |   80 +
+ frontend/src/routes/ProtectedRoute.jsx             |   20 +
+ frontend/src/services/adminService.js              |   86 +
+ frontend/src/services/apiClient.js                 |   12 +
+ frontend/src/services/authService.js               |   31 +
+ frontend/src/services/tripService.js               |   23 +
+ frontend/src/styles/fe1.css                        |   90 +
+ frontend/src/utils/auth.js                         |   20 +
+ frontend/src/utils/cities.js                       |   15 +
+ frontend/src/utils/format.js                       |   37 +
+ frontend/src/utils/tripFilters.js                  |   57 +
+ frontend/vite.config.js                            |    7 +
+ 244 files changed, 22756 insertions(+)
+
+e04b8c8 | 2026-10-17 | Nguyß╗àn D╞░╞íng Khang | update fe1
+ frontend/GIAI_THICH_CODE.md                        |  75 ++
+ frontend/README.md                                 |  71 +-
+ frontend/src/App.jsx                               |  15 +-
+ frontend/src/components/common/Alert.jsx           |   6 +-
+ frontend/src/components/common/EmptyState.jsx      |   8 +-
+ frontend/src/components/common/ErrorBoundary.jsx   |  26 -
+ frontend/src/components/common/ErrorState.jsx      |  10 +-
+ frontend/src/components/common/Icon.jsx            |  21 -
+ frontend/src/components/common/PlaceholderPage.jsx |   8 +-
+ frontend/src/components/common/RouteLabel.jsx      |  10 +-
+ frontend/src/components/common/SearchForm.jsx      |  55 +-
+ frontend/src/components/common/Spinner.jsx         |   7 +-
+ frontend/src/components/common/TripCard.jsx        |  41 +-
+ frontend/src/components/common/TripFilters.jsx     |  65 ++
+ frontend/src/components/layout/Footer.jsx          |   6 +-
+ frontend/src/components/layout/Navbar.jsx          |  36 +-
+ frontend/src/contexts/AuthContext.jsx              |  92 ++-
+ frontend/src/contexts/authContextValue.js          |   3 -
+ frontend/src/hooks/useAuth.js                      |  13 +-
+ frontend/src/index.css                             | 878 ++-------------------
+ frontend/src/layouts/AdminLayout.jsx               |  39 +-
+ frontend/src/layouts/MainLayout.jsx                |   7 +-
+ frontend/src/main.jsx                              |   9 +
+ frontend/src/pages/admin/Dashboard.jsx             | 119 ++-
+ frontend/src/pages/auth/Login.jsx                  |  68 +-
+ frontend/src/pages/auth/Register.jsx               |  83 +-
+ frontend/src/pages/customer/Home.jsx               |  49 +-
+ frontend/src/pages/customer/Profile.jsx            |  65 +-
+ frontend/src/pages/customer/SearchTrips.jsx        | 208 ++---
+ frontend/src/queries/adminQueries.js               |  18 +-
+ frontend/src/queries/authQueries.js                |   9 -
+ frontend/src/queries/tripQueries.js                |  33 +-
+ frontend/src/routes/AdminRoute.jsx                 |  12 +-
+ frontend/src/routes/AppRoutes.jsx                  |   7 +-
+ frontend/src/routes/GuestRoute.jsx                 |  19 -
+ frontend/src/routes/ProtectedRoute.jsx             |  11 +-
+ frontend/src/services/adminService.js              |  29 +-
+ frontend/src/services/apiClient.js                 |  20 +-
+ frontend/src/services/authService.js               |  96 ++-
+ frontend/src/services/mock/mockDb.js               | 147 ----
+ frontend/src/services/mockData.js                  | 114 +++
+ frontend/src/services/tripService.js               |  61 +-
+ frontend/src/styles/admin.css                      |  10 +
+ frontend/src/styles/base.css                       |  14 +
+ frontend/src/styles/buttons.css                    |   5 +
+ frontend/src/styles/feedback.css                   |   8 +
+ frontend/src/styles/forms.css                      |  10 +
+ frontend/src/styles/layout.css                     |   9 +
+ frontend/src/styles/navbar.css                     |   8 +
+ frontend/src/styles/trips.css                      |   8 +
+ frontend/src/styles/variables.css                  |   8 +
+ frontend/src/utils/format.js                       |  62 +-
+ frontend/src/utils/tripFilters.js                  |  57 ++
+ 53 files changed, 1070 insertions(+), 1798 deletions(-)
+
+17d60fb | 2026-10-15 | ESMo7 | change type exception on BusService
+ .../com/example/backend/exception/GlobalExceptionHandler.java    | 2 +-
+ .../src/main/java/com/example/backend/service/BusService.java    | 9 +++++----
+ 2 files changed, 6 insertions(+), 5 deletions(-)
+
+b990a81 | 2026-10-15 | ESMo7 | add errorlog
+ frontend/src/pages/admin/routes/RoutesPage.jsx    | 11 ++++++++++-
+ frontend/src/pages/admin/vihicle/VehiclesPage.jsx | 11 ++++++++++-
+ 2 files changed, 20 insertions(+), 2 deletions(-)
+
+5a3a82d | 2026-10-15 | QHuynh06 | .
+ frontend/src/layouts/Admin/Sidebar.jsx | 9 +++++++++
+ frontend/src/routes/AppRouter.jsx      | 2 ++
+ 2 files changed, 11 insertions(+)
+
+ebca425 | 2026-10-12 | ESMo7 | rollback AppRouter
+ frontend/src/routes/AppRouter.jsx | 7 -------
+ 1 file changed, 7 deletions(-)
+
+e79805a | 2026-10-12 | ESMo7 | update: bus-service(BE) & Seat (FE)
+ .../java/com/example/backend/entity/BusStatus.java |   6 --
+ .../main/java/com/example/backend/entity/Role.java |   6 --
+ .../com/example/backend/entity/RouteStatus.java    |   6 --
+ .../com/example/backend/entity/TripStatus.java     |   8 --
+ .../com/example/backend/service/BusService.java    |  92 ++++++++++++++++++---
+ backend/src/main/resources/application.properties  |   2 +-
+ frontend/src/assets/display.png                    | Bin 0 -> 7857 bytes
+ frontend/src/assets/index.js                       |   9 ++
+ frontend/src/assets/plugin.png                     | Bin 0 -> 30747 bytes
+ frontend/src/assets/snowflake.png                  | Bin 0 -> 31262 bytes
+ frontend/src/assets/toilets.png                    | Bin 0 -> 16107 bytes
+ frontend/src/assets/water.png                      | Bin 0 -> 13471 bytes
+ frontend/src/assets/wifi.png                       | Bin 0 -> 21183 bytes
+ frontend/src/components/seats/Seat.jsx             |   5 +-
+ frontend/src/components/seats/SeatMap.jsx          |   1 +
+ frontend/src/components/seats/SeatNote.jsx         |   5 +-
+ .../src/pages/customer/seats/SeatSelectPage.jsx    |   1 -
+ frontend/src/pages/customer/seats/SeatsPage.css    |  15 +---
+ .../src/pages/customer/trips/TripDetailsPage.css   |  74 ++++++++++++-----
+ .../src/pages/customer/trips/TripDetailsPage.jsx   |  57 +++++++++++--
+ frontend/src/routes/AppRouter.jsx                  |   7 ++
+ 21 files changed, 209 insertions(+), 85 deletions(-)
+
+8994603 | 2026-10-10 | ESMo7 | add tanstack Query
+ frontend/src/api/adminBusApi.js                    |  14 +-
+ frontend/src/api/adminRouteApi.js                  |  14 +-
+ frontend/src/api/adminUserApi.js                   |   9 +
+ frontend/src/api/bookingApi.js                     |  10 +-
+ frontend/src/api/seatApi.js                        |   4 +
+ frontend/src/components/common/Card.jsx            |  19 +
+ frontend/src/components/common/common.css          |  19 +
+ frontend/src/components/seats/Seat.jsx             |   2 +-
+ frontend/src/components/seats/seatClickHandler.js  |   2 +-
+ frontend/src/hooks/index.js                        |  26 ++
+ frontend/src/hooks/queryKeys.js                    |  26 ++
+ frontend/src/hooks/useBuses.js                     |  66 +++
+ frontend/src/hooks/useRoutes.js                    |  66 +++
+ frontend/src/hooks/useSeats.js                     |  11 +
+ frontend/src/hooks/useTrips.js                     |  95 +++++
+ frontend/src/hooks/useUsers.js                     |  41 ++
+ frontend/src/pages/admin/personal/UsersPage.jsx    |  72 +---
+ frontend/src/pages/admin/routes/RoutesPage.jsx     | 156 +++----
+ frontend/src/pages/admin/trips/AdminTripsPage.jsx  |  42 +-
+ frontend/src/pages/admin/trips/CreateTripForm.jsx  |  60 +--
+ frontend/src/pages/admin/trips/EditTripForm.jsx    |  89 ++--
+ frontend/src/pages/admin/vihicle/VehiclesPage.jsx  | 171 +++-----
+ .../pages/customer/bookings/BookingDetailPage.jsx  |  10 +-
+ .../src/pages/customer/bookings/BookingPage.jsx    |  12 +-
+ .../src/pages/customer/seats/SeatSelectPage.jsx    | 119 ++++++
+ frontend/src/pages/customer/seats/SeatsPage.jsx    | 147 -------
+ .../src/pages/customer/trips/TripDetailsPage.css   | 474 +++++++++++++++++++++
+ .../src/pages/customer/trips/TripDetailsPage.jsx   | 181 ++++++++
+ frontend/src/routes/AppRouter.jsx                  |  30 +-
+ 29 files changed, 1401 insertions(+), 586 deletions(-)
+
+ba7263c | 2026-10-10 | QHuynh06 | .
+ .../com/example/backend/repository/TicketRepository.java   | 14 +++++---------
+ .../java/com/example/backend/service/BookingService.java   |  8 +++++++-
+ 2 files changed, 12 insertions(+), 10 deletions(-)
+
+5ee7fe7 | 2026-10-08 | ESMo7 | Complete: AdminLayout basic(hasmockdata), tanstack not yet, new change backend from Huynh
+ .../backend/repository/BookingRepository.java      |  10 +-
+ .../example/backend/repository/SeatRepository.java |   8 +-
+ .../backend/repository/TicketRepository.java       |  40 +-
+ .../example/backend/repository/TripRepository.java |   9 +-
+ .../components/UsersManagement/UserRoleBadge.jsx   |  10 +
+ .../src/components/UsersManagement/UserRow.jsx     |  54 ++
+ .../src/components/UsersManagement/UserTable.jsx   |  48 ++
+ .../src/components/common/DeleteConfirmModal.jsx   |  65 +++
+ frontend/src/components/common/PageHeader.jsx      |  26 +-
+ frontend/src/components/common/common.css          | 176 ++++++-
+ frontend/src/components/routes/Route.css           | 180 +++++++
+ frontend/src/components/routes/RouteForm.jsx       | 149 ++++++
+ frontend/src/components/routes/RouteRow.jsx        |  52 ++
+ frontend/src/components/routes/RouteTable.jsx      |  58 +++
+ .../{vehicle/vehicle.css => vehicles/Vehicle.css}  |  34 +-
+ .../{vehicle => vehicles}/VehicleForm.jsx          |   0
+ .../{vehicle => vehicles}/VehicleModal.jsx         |   0
+ .../{vehicle => vehicles}/VehicleRow.jsx           |   0
+ .../{vehicle => vehicles}/VehicleTable.jsx         |   3 +-
+ frontend/src/pages/admin/RoutesPage.jsx            |   3 -
+ .../src/pages/admin/personal/UserDetailScreen.jsx  |  43 ++
+ frontend/src/pages/admin/personal/UsersPage.css    | 335 ++++++++++++
+ frontend/src/pages/admin/personal/UsersPage.jsx    |  83 +++
+ .../src/pages/admin/routes/RouteCreateScreen.jsx   |  16 +
+ .../src/pages/admin/routes/RouteDetailScreen.jsx   |  68 +++
+ .../src/pages/admin/routes/RouteEditScreen.jsx     |  21 +
+ frontend/src/pages/admin/routes/RouteScreens.css   | 229 +++++++++
+ frontend/src/pages/admin/routes/RoutesPage.jsx     | 190 ++++++-
+ .../pages/admin/vihicle/VehicleCreateScreen.jsx    |   2 +-
+ .../pages/admin/vihicle/VehicleDetailScreen.jsx    |   3 +
+ .../src/pages/admin/vihicle/VehicleEditScreen.jsx  |  22 +
+ frontend/src/pages/admin/vihicle/VehiclesPage.css  |   3 -
+ frontend/src/pages/admin/vihicle/VehiclesPage.jsx  | 225 ++++----
+ .../pages/customer/bookings/BookingDetailPage.css  | 402 +++++++++++++++
+ .../pages/customer/bookings/BookingDetailPage.jsx  | 568 +++++++++++++++++++--
+ .../src/pages/customer/bookings/BookingPage.css    | 290 +++++------
+ .../src/pages/customer/bookings/BookingPage.jsx    |  36 +-
+ .../src/pages/customer/bookings/MyBookingsPage.css | 295 +++++++++++
+ .../src/pages/customer/bookings/MyBookingsPage.jsx | 501 ++++++++----------
+ frontend/src/routes/AppRouter.jsx                  |   4 +-
+ 40 files changed, 3573 insertions(+), 688 deletions(-)
+
+ecbab49 | 2026-10-08 | ESMo7 | Update frontend admin UI
+ frontend/src/assets/bus.png                        | Bin 0 -> 23522 bytes
+ frontend/src/assets/eyes.png                       | Bin 0 -> 14721 bytes
+ frontend/src/assets/ic_bus.svg                     |   1 +
+ frontend/src/assets/ic_person.svg                  |   1 +
+ frontend/src/assets/ic_profile_circle.svg          |   1 +
+ frontend/src/assets/modify.svg                     |   1 +
+ frontend/src/assets/route.svg                      |   1 +
+ frontend/src/assets/trash.svg                      |   1 +
+ frontend/src/assets/user.svg                       |   1 +
+ frontend/src/components/common/Button.jsx          |  14 +
+ frontend/src/components/common/PageHeader.jsx      |  37 +++
+ frontend/src/components/common/StatusBadge.jsx     |  14 +
+ frontend/src/components/common/common.css          |  42 +++
+ frontend/src/components/vehicle/VehicleForm.jsx    | 161 ++++++++++
+ frontend/src/components/vehicle/VehicleModal.jsx   |  46 +++
+ frontend/src/components/vehicle/VehicleRow.jsx     |  53 ++++
+ frontend/src/components/vehicle/VehicleTable.jsx   |  53 ++++
+ frontend/src/components/vehicle/vehicle.css        | 173 +++++++++++
+ frontend/src/layouts/Admin/AdminLayout.jsx         |  21 ++
+ frontend/src/layouts/Admin/Header.jsx              |  10 +
+ frontend/src/layouts/Admin/Sidebar.jsx             |  43 +++
+ frontend/src/layouts/Admin/admin.css               | 218 ++++++++++++++
+ frontend/src/pages/admin/RoutesPage.jsx            |   3 +
+ frontend/src/pages/admin/personal/UsersPage.jsx    |   0
+ frontend/src/pages/admin/routes/RoutesPage.jsx     |   3 +
+ .../pages/admin/vihicle/VehicleCreateScreen.jsx    |  21 ++
+ .../pages/admin/vihicle/VehicleDetailScreen.jsx    |  84 ++++++
+ .../src/pages/admin/vihicle/VehicleScreens.css     | 269 +++++++++++++++++
+ frontend/src/pages/admin/vihicle/VehiclesPage.css  |   3 +
+ frontend/src/pages/admin/vihicle/VehiclesPage.jsx  | 236 +++++++++++++++
+ .../src/pages/customer/bookings/BookingPage.jsx    | 333 +++++++++++++++++++++
+ frontend/src/routes/AppRouter.jsx                  |  29 +-
+ frontend/src/routes/MainPages.css                  |   5 -
+ frontend/src/routes/MainPages.jsx                  |  16 -
+ 34 files changed, 1866 insertions(+), 28 deletions(-)
+
+ba3b2a4 | 2026-10-08 | QHuynh06 | fix repository backend cß╗ºa booking+ seat+ trip
+ .../backend/repository/BookingRepository.java      |  8 ++---
+ .../example/backend/repository/SeatRepository.java |  8 ++---
+ .../backend/repository/TicketRepository.java       | 42 ++++++++++++++++------
+ .../example/backend/repository/TripRepository.java |  7 ++--
+ .../pages/customer/bookings/BookingDetailPage.jsx  |  3 --
+ .../src/pages/customer/bookings/MyBookingsPage.jsx | 13 ++-----
+ 6 files changed, 45 insertions(+), 36 deletions(-)
+
+0f272c7 | 2026-10-08 | QHuynh06 | admin Booking +  booking detail Page
+ .../main/java/com/example/backend/entity/Seat.java |   4 +-
+ database_schema.sql                                | 106 ++-
+ frontend/src/api/adminBookingApi.js                |  19 +
+ frontend/src/api/bookingApi.js                     |  10 +-
+ .../src/pages/admin/bookings/AdminBookingsPage.css | 738 +++++++++++++++++++++
+ .../src/pages/admin/bookings/AdminBookingsPage.jsx | 201 ++++++
+ .../pages/admin/bookings/BookingDetailModal.jsx    | 255 +++++++
+ .../src/pages/admin/bookings/BookingFilters.jsx    |  54 ++
+ frontend/src/pages/admin/bookings/BookingStats.jsx |  67 ++
+ frontend/src/pages/admin/bookings/BookingTable.jsx | 125 ++++
+ frontend/src/pages/admin/bookings/bookingUtils.js  |  32 +
+ .../pages/customer/bookings/BookingDetailPage.css  | 402 +++++++++++
+ .../pages/customer/bookings/BookingDetailPage.jsx  | 571 +++++++++++++++-
+ .../src/pages/customer/bookings/BookingPage.jsx    |  36 +-
+ .../src/pages/customer/bookings/MyBookingsPage.css | 295 ++++++++
+ .../src/pages/customer/bookings/MyBookingsPage.jsx | 510 ++++++--------
+ frontend/src/routes/AppRouter.jsx                  |   6 +-
+ 17 files changed, 3079 insertions(+), 352 deletions(-)
+
+e9a0e38 | 2026-10-06 | ESMo7 | Update booking and trip services
+ backend/.gitignore                                 |  2 ++
+ .../java/com/example/backend/entity/Booking.java   |  2 +-
+ .../main/java/com/example/backend/entity/Trip.java |  2 +-
+ .../example/backend/service/BookingService.java    |  5 -----
+ .../com/example/backend/service/TripService.java   | 25 ++++++++++++++--------
+ 5 files changed, 20 insertions(+), 16 deletions(-)
+
+600c060 | 2026-10-06 | ESMo7 | chore: ignore notes markdown
+ .gitignore              | 4 ++++
+ backend/DESION_AGENT.md | 0
+ 2 files changed, 4 insertions(+)
+
+8741b94 | 2026-10-06 | QHuynh06 | Update AppRouter.jsx
+ frontend/src/routes/AppRouter.jsx | 6 ------
+ 1 file changed, 6 deletions(-)
+
+3255d9a | 2026-10-06 | QHuynh06 | index on fullstack2: 2187f3e Update frontend
+ backend/DESION_AGENT.md                            |   0
+ frontend/.gitignore                                |   2 +
+ frontend/package-lock.json                         | 958 ++++++++++++++++++++-
+ frontend/package.json                              |   9 +-
+ frontend/src/App.css                               | 368 ++++----
+ frontend/src/api/adminBookingApi.js                |   9 +
+ frontend/src/api/bookingApi.js                     |   8 +-
+ frontend/src/api/tripApi.js                        |  14 +-
+ frontend/src/assets/armchair.png                   | Bin 10500 -> 0 bytes
+ frontend/src/assets/chair_color.png                | Bin 9762 -> 0 bytes
+ frontend/src/assets/seat_avail.svg                 |   7 -
+ frontend/src/assets/selected_box.png               | Bin 12692 -> 0 bytes
+ frontend/src/assets/selected_cir.png               | Bin 22818 -> 0 bytes
+ frontend/src/assets/unavailable.png                | Bin 19182 -> 0 bytes
+ frontend/src/assets/volang.png                     | Bin 27386 -> 0 bytes
+ .../HeaderTicketDetail/HeaderTicketDetail.css      | 180 ++++
+ .../HeaderTicketDetail/HeaderTicketDetail.jsx      |  52 ++
+ frontend/src/components/common/StatusBadge.css     |  78 ++
+ frontend/src/components/common/StatusBadge.jsx     |  17 +
+ frontend/src/components/seats/BusFloor.css         |  52 --
+ frontend/src/components/seats/BusFloor.jsx         |  58 --
+ frontend/src/components/seats/Seat.css             |  41 -
+ frontend/src/components/seats/Seat.jsx             |  39 -
+ frontend/src/components/seats/SeatMap.css          |  21 -
+ frontend/src/components/seats/SeatMap.jsx          |  59 --
+ frontend/src/components/seats/SeatNote.css         |  35 -
+ frontend/src/components/seats/SeatNote.jsx         |  26 -
+ frontend/src/components/seats/seatClickHandler.js  |  13 -
+ frontend/src/components/seats/seatLayout.js        |  15 -
+ .../components/ticket-detail/BookingSummary.css    | 249 ++++++
+ .../components/ticket-detail/BookingSummary.jsx    | 125 +++
+ .../src/components/ticket-detail/TicketInfo.css    | 268 ++++++
+ .../src/components/ticket-detail/TicketInfo.jsx    | 100 +++
+ .../src/components/ticket-detail/TicketList.css    | 179 ++++
+ .../src/components/ticket-detail/TicketList.jsx    |  99 +++
+ frontend/src/index.css                             |  82 +-
+ .../src/pages/admin/bookings/AdminBookingsPage.jsx |  51 ++
+ .../admin/bookings/AdminBookingsPage.test.jsx      |  24 +
+ .../pages/customer/bookings/BookingDetailPage.jsx  |  42 +-
+ .../customer/bookings/BookingDetailPage.test.jsx   |  23 +
+ .../src/pages/customer/bookings/BookingPage.css    | 273 ------
+ .../customer/bookings/CancelBookingButton.jsx      |   3 +-
+ .../src/pages/customer/bookings/MyBookingsPage.jsx | 354 +-------
+ frontend/src/pages/customer/seats/SeatsPage.css    | 101 ---
+ frontend/src/pages/customer/seats/SeatsPage.jsx    | 147 ----
+ .../pages/customer/tickets/TicketsDetailPage.css   |  86 ++
+ .../pages/customer/tickets/TicketsDetailPage.jsx   |  26 +
+ frontend/src/pages/customer/trips/TripDetail.jsx   | 157 ++++
+ .../src/pages/customer/trips/TripDetail.test.jsx   |  92 ++
+ frontend/src/routes/AppRouter.jsx                  |  43 +-
+ frontend/src/routes/MainPages.css                  |   5 -
+ frontend/src/routes/MainPages.jsx                  |  16 -
+ frontend/src/routes/ProtectedRoute.jsx             |  12 +-
+ 53 files changed, 3101 insertions(+), 1517 deletions(-)
+
+2187f3e | 2026-10-06 | ESMo7 | Update frontend
+ backend/DESION_AGENT.md                            |   0
+ frontend/.gitignore                                |   2 -
+ frontend/package-lock.json                         | 958 +--------------------
+ frontend/package.json                              |   9 +-
+ frontend/src/App.css                               | 368 ++++----
+ frontend/src/api/adminBookingApi.js                |   9 -
+ frontend/src/api/bookingApi.js                     |   8 +-
+ frontend/src/api/tripApi.js                        |  14 +-
+ frontend/src/assets/armchair.png                   | Bin 0 -> 10500 bytes
+ frontend/src/assets/chair_color.png                | Bin 0 -> 9762 bytes
+ frontend/src/assets/seat_avail.svg                 |   7 +
+ frontend/src/assets/selected_box.png               | Bin 0 -> 12692 bytes
+ frontend/src/assets/selected_cir.png               | Bin 0 -> 22818 bytes
+ frontend/src/assets/unavailable.png                | Bin 0 -> 19182 bytes
+ frontend/src/assets/volang.png                     | Bin 0 -> 27386 bytes
+ .../HeaderTicketDetail/HeaderTicketDetail.css      | 180 ----
+ .../HeaderTicketDetail/HeaderTicketDetail.jsx      |  52 --
+ frontend/src/components/common/StatusBadge.css     |  78 --
+ frontend/src/components/common/StatusBadge.jsx     |  17 -
+ frontend/src/components/seats/BusFloor.css         |  52 ++
+ frontend/src/components/seats/BusFloor.jsx         |  58 ++
+ frontend/src/components/seats/Seat.css             |  41 +
+ frontend/src/components/seats/Seat.jsx             |  39 +
+ frontend/src/components/seats/SeatMap.css          |  21 +
+ frontend/src/components/seats/SeatMap.jsx          |  59 ++
+ frontend/src/components/seats/SeatNote.css         |  35 +
+ frontend/src/components/seats/SeatNote.jsx         |  26 +
+ frontend/src/components/seats/seatClickHandler.js  |  13 +
+ frontend/src/components/seats/seatLayout.js        |  15 +
+ .../components/ticket-detail/BookingSummary.css    | 249 ------
+ .../components/ticket-detail/BookingSummary.jsx    | 125 ---
+ .../src/components/ticket-detail/TicketInfo.css    | 268 ------
+ .../src/components/ticket-detail/TicketInfo.jsx    | 100 ---
+ .../src/components/ticket-detail/TicketList.css    | 179 ----
+ .../src/components/ticket-detail/TicketList.jsx    |  99 ---
+ frontend/src/index.css                             |  82 +-
+ .../src/pages/admin/bookings/AdminBookingsPage.jsx |  51 --
+ .../admin/bookings/AdminBookingsPage.test.jsx      |  24 -
+ .../pages/customer/bookings/BookingDetailPage.jsx  |  42 +-
+ .../customer/bookings/BookingDetailPage.test.jsx   |  23 -
+ .../src/pages/customer/bookings/BookingPage.css    | 273 ++++++
+ .../customer/bookings/CancelBookingButton.jsx      |   3 +-
+ .../src/pages/customer/bookings/MyBookingsPage.jsx | 354 +++++++-
+ frontend/src/pages/customer/seats/SeatsPage.css    | 101 +++
+ frontend/src/pages/customer/seats/SeatsPage.jsx    | 147 ++++
+ .../pages/customer/tickets/TicketsDetailPage.css   |  86 --
+ .../pages/customer/tickets/TicketsDetailPage.jsx   |  26 -
+ frontend/src/pages/customer/trips/TripDetail.jsx   | 157 ----
+ .../src/pages/customer/trips/TripDetail.test.jsx   |  92 --
+ frontend/src/routes/AppRouter.jsx                  |  43 +-
+ frontend/src/routes/MainPages.css                  |   5 +
+ frontend/src/routes/MainPages.jsx                  |  16 +
+ frontend/src/routes/ProtectedRoute.jsx             |  12 +-
+ 53 files changed, 1517 insertions(+), 3101 deletions(-)
+
+0c2fff0 | 2026-10-06 | QHuynh06 | created  booking page
+ frontend/src/api/tripApi.js                        |   8 +-
+ .../src/pages/customer/bookings/BookingPage.css    | 273 +++++++++++++++++
+ .../src/pages/customer/bookings/BookingPage.jsx    | 333 +++++++++++++++++++++
+ frontend/src/routes/AppRouter.jsx                  |   2 +
+ 4 files changed, 610 insertions(+), 6 deletions(-)
+
+946b6a3 | 2026-10-03 | ESMo7 | Update database schema booking
+ database_schema.sql | 1 +
+ 1 file changed, 1 insertion(+)
+
+33be1b8 | 2026-10-03 | ESMo7 | fix: complete seat booking and ticket flow on backend
+ .gitignore                                         |    5 +-
+ README.md                                          |   41 +-
+ backend/.gitignore                                 |    4 +
+ backend/pom.xml                                    |   14 +
+ .../com/example/backend/BackendApplication.java    |    2 -
+ .../backend/controller/AdminBookingController.java |   19 +-
+ .../backend/controller/BookingController.java      |   40 +-
+ .../example/backend/controller/SeatController.java |   25 -
+ .../backend/dto/booking/AddTicketRequest.java      |   11 -
+ .../backend/dto/booking/BookingResponse.java       |    8 +
+ .../backend/dto/booking/ConfirmBookingRequest.java |    8 -
+ .../backend/dto/booking/CreateBookingRequest.java  |    8 +-
+ .../backend/dto/booking/PassengerDetails.java      |    2 +-
+ .../backend/dto/booking/TicketResponse.java        |    1 -
+ .../example/backend/dto/error/ConflictSeat.java    |    3 +
+ .../example/backend/dto/error/ErrorResponse.java   |   13 +-
+ .../java/com/example/backend/entity/Booking.java   |   10 +-
+ .../main/java/com/example/backend/entity/Seat.java |    8 +-
+ .../java/com/example/backend/entity/Ticket.java    |   23 +-
+ .../com/example/backend/enums/TicketStatus.java    |    1 -
+ .../backend/exception/GlobalExceptionHandler.java  |   68 +-
+ .../backend/exception/HoldExpiredException.java    |   12 -
+ .../backend/exception/SeatConflictException.java   |   13 +-
+ .../backend/repository/BookingRepository.java      |   17 +-
+ .../example/backend/repository/SeatRepository.java |    2 +-
+ .../backend/repository/TicketRepository.java       |   39 +-
+ .../example/backend/repository/TripRepository.java |   17 +-
+ .../backend/service/AdminBookingService.java       |    1 -
+ .../example/backend/service/BookingService.java    |  728 +++++---------
+ .../backend/service/OccupiedSeatConstraint.java    |   30 +
+ .../com/example/backend/service/SeatService.java   |   15 +-
+ .../com/example/backend/service/TripService.java   |   79 +-
+ backend/src/main/resources/application.properties  |   36 +-
+ .../example/backend/BackendApplicationTests.java   |   13 -
+ .../backend/service/BookingServiceTest.java        | 1034 +++++++++++++++++---
+ .../service/OccupiedSeatConstraintTest.java        |   34 +
+ .../example/backend/service/SeatServiceTest.java   |   42 +-
+ database_schema.sql                                |  312 +++---
+ frontend/.gitignore                                |    2 +
+ frontend/package-lock.json                         |  958 +++++++++++++++++-
+ frontend/package.json                              |    9 +-
+ frontend/src/api/adminBookingApi.js                |    9 +
+ frontend/src/api/bookingApi.js                     |    8 +-
+ frontend/src/api/tripApi.js                        |    4 +
+ .../HeaderTicketDetail/HeaderTicketDetail.css      |  180 ++++
+ .../HeaderTicketDetail/HeaderTicketDetail.jsx      |   52 +
+ frontend/src/components/common/StatusBadge.css     |   78 ++
+ frontend/src/components/common/StatusBadge.jsx     |   17 +
+ .../components/ticket-detail/BookingSummary.css    |  249 +++++
+ .../components/ticket-detail/BookingSummary.jsx    |  125 +++
+ .../src/components/ticket-detail/TicketInfo.css    |  268 +++++
+ .../src/components/ticket-detail/TicketInfo.jsx    |  100 ++
+ .../src/components/ticket-detail/TicketList.css    |  179 ++++
+ .../src/components/ticket-detail/TicketList.jsx    |   99 ++
+ frontend/src/index.css                             |  113 +--
+ .../src/pages/admin/bookings/AdminBookingsPage.jsx |   51 +
+ .../admin/bookings/AdminBookingsPage.test.jsx      |   24 +
+ .../pages/customer/bookings/BookingDetailPage.jsx  |   42 +-
+ .../customer/bookings/BookingDetailPage.test.jsx   |   23 +
+ .../customer/bookings/CancelBookingButton.jsx      |    3 +-
+ .../src/pages/customer/bookings/MyBookingsPage.jsx |    2 +-
+ .../pages/customer/tickets/TicketsDetailPage.css   |   86 ++
+ .../pages/customer/tickets/TicketsDetailPage.jsx   |   26 +
+ frontend/src/pages/customer/trips/TripDetail.jsx   |  157 +++
+ .../src/pages/customer/trips/TripDetail.test.jsx   |   92 ++
+ frontend/src/routes/AppRouter.jsx                  |    8 +-
+ frontend/src/routes/ProtectedRoute.jsx             |   12 +-
+ 67 files changed, 4532 insertions(+), 1182 deletions(-)
+
+10eacc2 | 2026-10-02 | Nguyß╗àn D╞░╞íng Khang | Update fe1
+ frontend/src/components/common/EmptyState.jsx      |   6 +-
+ frontend/src/components/common/Icon.jsx            | 162 ++++
+ frontend/src/components/common/PlaceholderPage.jsx |   2 +-
+ frontend/src/components/common/RouteLabel.jsx      |  12 +
+ frontend/src/components/common/SearchForm.jsx      |   3 +-
+ frontend/src/components/common/TripCard.jsx        |   3 +-
+ frontend/src/components/layout/Footer.jsx          |   2 +-
+ frontend/src/components/layout/Navbar.jsx          |   7 +-
+ frontend/src/contexts/AuthContext.jsx              |   2 +-
+ .../{authContext.js => authContextValue.js}        |   0
+ frontend/src/hooks/useAuth.js                      |   2 +-
+ frontend/src/index.css                             | 963 +++++++++++++++++----
+ frontend/src/layouts/AdminLayout.jsx               |  18 +-
+ frontend/src/pages/admin/Dashboard.jsx             |  25 +-
+ frontend/src/pages/customer/Home.jsx               |  12 +-
+ frontend/src/pages/customer/SearchTrips.jsx        |   5 +-
+ frontend/src/routes/AdminRoute.jsx                 |   2 +-
+ frontend/src/services/mock/mockDb.js               |   2 +-
+ 18 files changed, 1038 insertions(+), 190 deletions(-)
+
+36906db | 2026-10-02 | Nguyß╗àn D╞░╞íng Khang | Force push all files
+ frontend/.env.example                              |   4 +
+ frontend/.gitignore                                |   5 +
+ frontend/README.md                                 |  56 ++-
+ frontend/index.html                                |   4 +-
+ frontend/package-lock.json                         | 398 ++++++++++++++++++++-
+ frontend/package.json                              |   5 +-
+ frontend/src/App.css                               | 184 ----------
+ frontend/src/App.jsx                               | 133 +------
+ frontend/src/assets/hero.png                       | Bin 13057 -> 0 bytes
+ frontend/src/assets/react.svg                      |   1 -
+ frontend/src/assets/vite.svg                       |   1 -
+ frontend/src/components/common/Alert.jsx           |   8 +
+ frontend/src/components/common/EmptyState.jsx      |   9 +
+ frontend/src/components/common/ErrorBoundary.jsx   |  26 ++
+ frontend/src/components/common/ErrorState.jsx      |  15 +
+ frontend/src/components/common/PlaceholderPage.jsx |  14 +
+ frontend/src/components/common/SearchForm.jsx      |  52 +++
+ frontend/src/components/common/Spinner.jsx         |   8 +
+ frontend/src/components/common/TripCard.jsx        |  41 +++
+ frontend/src/components/layout/Footer.jsx          |   7 +
+ frontend/src/components/layout/Navbar.jsx          |  46 +++
+ frontend/src/contexts/AuthContext.jsx              |  56 +++
+ frontend/src/contexts/authContext.js               |   3 +
+ frontend/src/hooks/useAuth.js                      |   8 +
+ frontend/src/index.css                             | 286 ++++++++++-----
+ frontend/src/layouts/AdminLayout.jsx               |  38 ++
+ frontend/src/layouts/MainLayout.jsx                |  13 +
+ frontend/src/main.jsx                              |  12 +-
+ frontend/src/pages/admin/Dashboard.jsx             | 139 +++++++
+ frontend/src/pages/auth/Login.jsx                  |  60 ++++
+ frontend/src/pages/auth/Register.jsx               |  66 ++++
+ frontend/src/pages/customer/Home.jsx               |  72 ++++
+ frontend/src/pages/customer/Profile.jsx            |  67 ++++
+ frontend/src/pages/customer/SearchTrips.jsx        | 169 +++++++++
+ frontend/src/queries/adminQueries.js               |  13 +
+ frontend/src/queries/authQueries.js                |   9 +
+ frontend/src/queries/queryClient.js                |  11 +
+ frontend/src/queries/tripQueries.js                |  26 ++
+ frontend/src/routes/AdminRoute.jsx                 |  23 ++
+ frontend/src/routes/AppRoutes.jsx                  |  57 +++
+ frontend/src/routes/GuestRoute.jsx                 |  19 +
+ frontend/src/routes/ProtectedRoute.jsx             |  13 +
+ frontend/src/services/adminService.js              |  18 +
+ frontend/src/services/apiClient.js                 |  33 ++
+ frontend/src/services/authService.js               |  56 +++
+ frontend/src/services/mock/mockDb.js               | 147 ++++++++
+ frontend/src/services/tripService.js               |  46 +++
+ frontend/src/utils/cities.js                       |  13 +
+ frontend/src/utils/format.js                       |  37 ++
+ 49 files changed, 2103 insertions(+), 424 deletions(-)
+
+bfd4f39 | 2026-09-30 | ESMo7 | change booking
+ database_schema.sql | 179 +++++++++++++++++++++++++++++++++-------------------
+ 1 file changed, 113 insertions(+), 66 deletions(-)
+
+06c75be | 2026-09-30 | ESMo7 | Update BE2
+ .vscode/settings.json                              |   3 +
+ README.md                                          |  39 ++
+ backend/.gitignore                                 |   3 +
+ backend/pom.xml                                    | 143 +++--
+ .../com/example/backend/BackendApplication.java    |   2 +
+ .../java/com/example/backend/config/JwtConfig.java |  52 ++
+ .../com/example/backend/config/PasswordConfig.java |  15 +
+ .../com/example/backend/config/SecurityConfig.java | 118 ++++
+ .../backend/controller/AdminBookingController.java |  25 +
+ .../controller/AdminDashboardController.java       |  25 +
+ .../backend/controller/AdminUserController.java    |  55 ++
+ .../example/backend/controller/AuthController.java |  52 ++
+ .../backend/controller/BookingController.java      | 130 ++++
+ .../example/backend/controller/BusController.java  |  49 ++
+ .../backend/controller/PublicTripController.java   |  49 ++
+ .../backend/controller/RouteController.java        |  49 ++
+ .../example/backend/controller/SeatController.java |  25 +
+ .../example/backend/controller/TripController.java |  50 ++
+ .../example/backend/controller/UserController.java |  36 ++
+ .../backend/dto/admin/AdminDashboardResponse.java  |  40 ++
+ .../com/example/backend/dto/auth/AuthResponse.java |  90 +++
+ .../com/example/backend/dto/auth/LoginRequest.java |  33 +
+ .../example/backend/dto/auth/RegisterRequest.java  |  70 +++
+ .../backend/dto/booking/AddTicketRequest.java      |  11 +
+ .../backend/dto/booking/BookingResponse.java       |  19 +
+ .../backend/dto/booking/ConfirmBookingRequest.java |   8 +
+ .../backend/dto/booking/CreateBookingRequest.java  |  12 +
+ .../backend/dto/booking/PassengerDetails.java      |  12 +
+ .../backend/dto/booking/TicketResponse.java        |  19 +
+ .../example/backend/dto/error/ErrorResponse.java   |   4 +
+ .../example/backend/dto/seat/SeatAvailability.java |  20 +
+ .../com/example/backend/dto/seat/SeatResponse.java |  14 +
+ .../backend/dto/user/UpdateUserRoleRequest.java    |  21 +
+ .../com/example/backend/dto/user/UserResponse.java |  56 ++
+ .../java/com/example/backend/entity/Booking.java   | 101 ++++
+ .../main/java/com/example/backend/entity/Bus.java  | 128 ++++
+ .../java/com/example/backend/entity/Route.java     | 159 +++++
+ .../main/java/com/example/backend/entity/Seat.java |  81 +++
+ .../java/com/example/backend/entity/Ticket.java    | 102 ++++
+ .../main/java/com/example/backend/entity/Trip.java | 152 +++++
+ .../main/java/com/example/backend/entity/User.java | 135 +++++
+ .../com/example/backend/enums/BookingStatus.java   |   7 +
+ .../java/com/example/backend/enums/BusStatus.java  |   6 +
+ .../main/java/com/example/backend/enums/Role.java  |   6 +
+ .../com/example/backend/enums/RouteStatus.java     |   6 +
+ .../java/com/example/backend/enums/SeatStatus.java |   6 +
+ .../java/com/example/backend/enums/SeatType.java   |   8 +
+ .../com/example/backend/enums/TicketStatus.java    |   8 +
+ .../java/com/example/backend/enums/TripStatus.java |   8 +
+ .../backend/exception/BadRequestException.java     |  12 +
+ .../backend/exception/ForbiddenException.java      |  12 +
+ .../backend/exception/GlobalExceptionHandler.java  | 143 +++++
+ .../backend/exception/HoldExpiredException.java    |  12 +
+ .../exception/ResourceNotFoundException.java       |  12 +
+ .../backend/exception/SeatConflictException.java   |  12 +
+ .../backend/repository/BookingRepository.java      |  35 ++
+ .../example/backend/repository/BusRepository.java  |  13 +
+ .../backend/repository/RouteRepository.java        |  19 +
+ .../example/backend/repository/SeatRepository.java |  24 +
+ .../backend/repository/TicketRepository.java       |  44 ++
+ .../example/backend/repository/TripRepository.java |  59 ++
+ .../example/backend/repository/UserRepository.java |  17 +
+ .../backend/service/AdminBookingService.java       |  68 +++
+ .../backend/service/AdminDashboardService.java     |  38 ++
+ .../com/example/backend/service/AuthService.java   |  86 +++
+ .../example/backend/service/BookingService.java    | 640 ++++++++++++++++++++
+ .../com/example/backend/service/BusService.java    |  56 ++
+ .../com/example/backend/service/JwtService.java    |  59 ++
+ .../com/example/backend/service/RouteService.java  |  69 +++
+ .../com/example/backend/service/SeatService.java   |  58 ++
+ .../com/example/backend/service/TripService.java   | 150 +++++
+ .../com/example/backend/service/UserService.java   |  59 ++
+ backend/src/main/resources/application.properties  |  29 +
+ .../backend/service/BookingServiceTest.java        | 177 ++++++
+ .../example/backend/service/SeatServiceTest.java   |  92 +++
+ frontend/package-lock.json                         | 398 ++++++++++++-
+ frontend/package.json                              |   5 +-
+ frontend/src/App.jsx                               | 121 +---
+ frontend/src/api/adminBusApi.js                    |   5 +
+ frontend/src/api/adminRouteApi.js                  |   5 +
+ frontend/src/api/adminTripApi.js                   |  21 +
+ frontend/src/api/axiosClient.js                    |  23 +
+ frontend/src/api/bookingApi.js                     |  17 +
+ frontend/src/api/tripApi.js                        |  19 +
+ frontend/src/main.jsx                              |  25 +-
+ frontend/src/pages/admin/trips/AdminTripsPage.css  | 663 +++++++++++++++++++++
+ frontend/src/pages/admin/trips/AdminTripsPage.jsx  | 526 ++++++++++++++++
+ frontend/src/pages/admin/trips/CreateTripForm.jsx  | 206 +++++++
+ frontend/src/pages/admin/trips/EditTripForm.jsx    | 253 ++++++++
+ .../pages/customer/bookings/BookingDetailPage.jsx  |  63 ++
+ .../customer/bookings/CancelBookingButton.jsx      |  59 ++
+ .../src/pages/customer/bookings/MyBookingsPage.jsx |  65 ++
+ frontend/src/routes/AppRouter.jsx                  |  30 +
+ frontend/src/routes/ProtectedRoute.jsx             |  16 +
+ frontend/src/utils/auth.js                         |  20 +
+ 95 files changed, 6615 insertions(+), 182 deletions(-)
+
+546eef5 | 2026-09-30 | ESMo7 | Update BE2
+ .gitignore | 22 ++++++++++++++++++++++
+ 1 file changed, 22 insertions(+)
+
+ac435da | 2026-09-30 | QHuynh06 | ho├án th├ánh trang admin trip + booking page c╞í bß║ún
+ frontend/src/api/bookingApi.js                     |  17 +
+ frontend/src/pages/admin/trips/AdminTripsPage.css  | 663 +++++++++++++++++++++
+ frontend/src/pages/admin/trips/AdminTripsPage.jsx  | 558 ++++++++++++++---
+ frontend/src/pages/admin/trips/CreateTripForm.jsx  |   7 +-
+ frontend/src/pages/admin/trips/EditTripForm.jsx    |   2 +-
+ .../pages/customer/bookings/BookingDetailPage.jsx  |  63 ++
+ .../customer/bookings/CancelBookingButton.jsx      |  59 ++
+ .../src/pages/customer/bookings/MyBookingsPage.jsx |  65 ++
+ frontend/src/routes/AppRouter.jsx                  |  24 +-
+ frontend/src/routes/ProtectedRoute.jsx             |  16 +
+ frontend/src/utils/auth.js                         |  20 +
+ 11 files changed, 1392 insertions(+), 102 deletions(-)
+
+480bf2d | 2026-09-29 | QHuynh06 | Agent host session 6ae575dd-f13b-4b59-ae86-5a0372f4b921 - turn 1
+5417c67 | 2026-09-29 | QHuynh06 | Agent host session 6ae575dd-f13b-4b59-ae86-5a0372f4b921 - turn 1 start
+f6f0f70 | 2026-09-29 | QHuynh06 | Agent host session 6ae575dd-f13b-4b59-ae86-5a0372f4b921 - baseline checkpoint
+ .gitattributes                                     |    2 +
+ PHAN_CHIA_CONG_VIEC_WEBSITE_DAT_VE_XE_4_TUAN.docx  |  Bin 0 -> 65820 bytes
+ README.md                                          | 1775 ++++++++++++++
+ backend/.gitattributes                             |    2 +
+ backend/.gitignore                                 |   33 +
+ backend/.mvn/wrapper/maven-wrapper.properties      |    3 +
+ backend/mvnw                                       |  295 +++
+ backend/mvnw.cmd                                   |  189 ++
+ backend/pom.xml                                    |   60 +
+ .../com/example/backend/BackendApplication.java    |   13 +
+ .../com/example/backend/ServletInitializer.java    |   13 +
+ backend/src/main/resources/application.properties  |    1 +
+ .../example/backend/BackendApplicationTests.java   |   13 +
+ database_schema.sql                                |  279 +++
+ frontend/.gitignore                                |   24 +
+ frontend/README.md                                 |   16 +
+ frontend/eslint.config.js                          |   21 +
+ frontend/index.html                                |   13 +
+ frontend/package-lock.json                         | 2447 ++++++++++++++++++++
+ frontend/package.json                              |   27 +
+ frontend/public/favicon.svg                        |    1 +
+ frontend/public/icons.svg                          |   24 +
+ frontend/src/App.css                               |  184 ++
+ frontend/src/App.jsx                               |  122 +
+ frontend/src/assets/hero.png                       |  Bin 0 -> 13057 bytes
+ frontend/src/assets/react.svg                      |    1 +
+ frontend/src/assets/vite.svg                       |    1 +
+ frontend/src/index.css                             |  111 +
+ frontend/src/main.jsx                              |   10 +
+ frontend/vite.config.js                            |    7 +
+ 30 files changed, 5687 insertions(+)
+
+9accbf6 | 2026-09-29 | QHuynh06 | basic admin trip page
+ .../com/example/backend/config/SecurityConfig.java |  35 +-
+ frontend/package-lock.json                         | 398 ++++++++++++++++++++-
+ frontend/package.json                              |   5 +-
+ frontend/src/App.jsx                               | 121 +------
+ frontend/src/api/adminBusApi.js                    |   5 +
+ frontend/src/api/adminRouteApi.js                  |   5 +
+ frontend/src/api/adminTripApi.js                   |  21 ++
+ frontend/src/api/axiosClient.js                    |  23 ++
+ frontend/src/api/bookingApi.js                     |   0
+ frontend/src/api/tripApi.js                        |  19 +
+ frontend/src/main.jsx                              |  25 +-
+ frontend/src/pages/admin/trips/AdminTripsPage.jsx  | 152 ++++++++
+ frontend/src/pages/admin/trips/CreateTripForm.jsx  | 203 +++++++++++
+ frontend/src/pages/admin/trips/EditTripForm.jsx    | 253 +++++++++++++
+ frontend/src/routes/AppRouter.jsx                  |  20 ++
+ ~$AN_CHIA_CONG_VIEC_WEBSITE_DAT_VE_XE_4_TUAN.docx  | Bin 162 -> 0 bytes
+ 16 files changed, 1153 insertions(+), 132 deletions(-)
+
+c8177a1 | 2026-09-28 | QHuynh06 | basic completed BE1
+ .../controller/AdminDashboardController.java       |  25 ++++
+ .../backend/controller/AdminUserController.java    |  55 ++++++++
+ .../backend/controller/PublicTripController.java   |  40 ++++++
+ .../example/backend/controller/TripController.java |  50 +++++++
+ .../backend/dto/admin/AdminDashboardResponse.java  |  40 ++++++
+ .../backend/dto/user/UpdateUserRoleRequest.java    |  21 +++
+ .../main/java/com/example/backend/entity/Trip.java | 151 +++++++++++++++++++++
+ .../com/example/backend/entity/TripStatus.java     |   8 ++
+ .../example/backend/repository/TripRepository.java |  51 +++++++
+ .../backend/service/AdminDashboardService.java     |  38 ++++++
+ .../com/example/backend/service/TripService.java   | 150 ++++++++++++++++++++
+ .../com/example/backend/service/UserService.java   |   9 ++
+ 12 files changed, 638 insertions(+)
+
+15c294f | 2026-09-28 | QHuynh06 | update from BE1
+ .vscode/settings.json                              |   3 +
+ backend/pom.xml                                    | 137 +++++++++++-------
+ .../java/com/example/backend/config/JwtConfig.java |  52 +++++++
+ .../com/example/backend/config/PasswordConfig.java |  15 ++
+ .../com/example/backend/config/SecurityConfig.java |  89 ++++++++++++
+ .../example/backend/controller/AuthController.java |  52 +++++++
+ .../example/backend/controller/BusController.java  |  49 +++++++
+ .../backend/controller/RouteController.java        |  49 +++++++
+ .../example/backend/controller/UserController.java |  36 +++++
+ .../com/example/backend/dto/auth/AuthResponse.java |  90 ++++++++++++
+ .../com/example/backend/dto/auth/LoginRequest.java |  33 +++++
+ .../example/backend/dto/auth/RegisterRequest.java  |  70 +++++++++
+ .../com/example/backend/dto/user/UserResponse.java |  56 ++++++++
+ .../main/java/com/example/backend/entity/Bus.java  | 127 +++++++++++++++++
+ .../java/com/example/backend/entity/BusStatus.java |   6 +
+ .../main/java/com/example/backend/entity/Role.java |   6 +
+ .../java/com/example/backend/entity/Route.java     | 158 +++++++++++++++++++++
+ .../com/example/backend/entity/RouteStatus.java    |   6 +
+ .../main/java/com/example/backend/entity/User.java | 134 +++++++++++++++++
+ .../example/backend/repository/BusRepository.java  |  13 ++
+ .../backend/repository/RouteRepository.java        |  19 +++
+ .../example/backend/repository/UserRepository.java |  17 +++
+ .../com/example/backend/service/AuthService.java   |  86 +++++++++++
+ .../com/example/backend/service/BusService.java    |  56 ++++++++
+ .../com/example/backend/service/JwtService.java    |  59 ++++++++
+ .../com/example/backend/service/RouteService.java  |  69 +++++++++
+ .../com/example/backend/service/UserService.java   |  50 +++++++
+ backend/src/main/resources/application.properties  |  23 +++
+ ~$AN_CHIA_CONG_VIEC_WEBSITE_DAT_VE_XE_4_TUAN.docx  | Bin 0 -> 162 bytes
+ 29 files changed, 1507 insertions(+), 53 deletions(-)
+
+8040271 | 2026-09-27 | QHuynh06 | Update database_schema.sql
+ database_schema.sql | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+edd662e | 2026-09-26 | QHuynh06 | .
+ PHAN_CHIA_CONG_VIEC_WEBSITE_DAT_VE_XE_4_TUAN.docx  | Bin 0 -> 65820 bytes
+ ...ONG_VIEC_WEBSITE_DAT_VE_XE_CHI_TIET_4_TUAN.docx | Bin 84268 -> 0 bytes
+ README.md                                          | 514 ++++++++-------------
+ database_schema.sql                                | 279 +++++++++++
+ 4 files changed, 462 insertions(+), 331 deletions(-)
+
+11c2ff9 | 2026-09-25 | QHuynh06 | inital commit
+ ...ONG_VIEC_WEBSITE_DAT_VE_XE_CHI_TIET_4_TUAN.docx |  Bin 83498 -> 84268 bytes
+ README.md                                          | 1923 ++++++++++++++-
+ frontend/.gitignore                                |   24 +
+ frontend/README.md                                 |   16 +
+ frontend/eslint.config.js                          |   21 +
+ frontend/index.html                                |   13 +
+ frontend/package-lock.json                         | 2447 ++++++++++++++++++++
+ frontend/package.json                              |   27 +
+ frontend/public/favicon.svg                        |    1 +
+ frontend/public/icons.svg                          |   24 +
+ frontend/src/App.css                               |  184 ++
+ frontend/src/App.jsx                               |  122 +
+ frontend/src/assets/hero.png                       |  Bin 0 -> 13057 bytes
+ frontend/src/assets/react.svg                      |    1 +
+ frontend/src/assets/vite.svg                       |    1 +
+ frontend/src/index.css                             |  111 +
+ frontend/src/main.jsx                              |   10 +
+ frontend/vite.config.js                            |    7 +
+ 18 files changed, 4931 insertions(+), 1 deletion(-)
+
+ff18e31 | 2026-09-25 | QHuynh06 | Initial commit
+ .gitattributes                                     |   2 +
+ ...ONG_VIEC_WEBSITE_DAT_VE_XE_CHI_TIET_4_TUAN.docx | Bin 0 -> 83498 bytes
+ README.md                                          |   2 +
+ backend/.gitattributes                             |   2 +
+ backend/.gitignore                                 |  33 +++
+ backend/.mvn/wrapper/maven-wrapper.properties      |   3 +
+ backend/mvnw                                       | 295 +++++++++++++++++++++
+ backend/mvnw.cmd                                   | 189 +++++++++++++
+ backend/pom.xml                                    |  60 +++++
+ .../com/example/backend/BackendApplication.java    |  13 +
+ .../com/example/backend/ServletInitializer.java    |  13 +
+ backend/src/main/resources/application.properties  |   1 +
+ .../example/backend/BackendApplicationTests.java   |  13 +
+ 13 files changed, 626 insertions(+)
