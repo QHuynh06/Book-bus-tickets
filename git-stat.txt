@@ -1,4 +1,17 @@
-﻿7440114 | 2026-10-30 | ESMo7 | refactor: code style
+﻿fc4d20e | 2026-11-05 | QHuynh06 | th├¬m hook cho c├íc trang cß╗ºa FE3
+ frontend/src/hooks/useAdminBookings.js             | 38 +++++++++
+ frontend/src/hooks/useBookings.js                  | 93 ++++++++++++++++++++++
+ .../src/pages/admin/bookings/AdminBookingsPage.jsx | 36 +++------
+ .../pages/customer/bookings/BookingDetailPage.jsx  | 55 ++-----------
+ .../src/pages/customer/bookings/BookingPage.jsx    | 22 +++--
+ .../src/pages/customer/bookings/MyBookingsPage.jsx |  9 +--
+ 6 files changed, 160 insertions(+), 93 deletions(-)
+
+96184f8 | 2026-11-05 | QHuynh06 | Create git-stat.txt
+ git-stat.txt | 1212 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 1212 insertions(+)
+
+7440114 | 2026-10-30 | ESMo7 | refactor: code style
  backend/src/main/resources/application.properties  |   1 +
  frontend/package-lock.json                         | 180 ++++++++++-----------
  frontend/src/components/seats/SeatMap.jsx          |   6 +-
