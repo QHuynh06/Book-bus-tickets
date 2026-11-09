@@ -3,26 +3,20 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import {
-  createAdminBus,
-  deleteAdminBus,
-  getAdminBusById,
-  getAdminBuses,
-  updateAdminBus,
-} from "../api/adminBusApi";
+import { adminBusApi } from "../api/adminBusApi";
 import { queryKeys } from "./queryKeys";
 
 export function useBuses() {
   return useQuery({
     queryKey: queryKeys.buses.all,
-    queryFn: async () => (await getAdminBuses()).data,
+    queryFn: adminBusApi.getAdminBuses,
   });
 }
 
 export function useBus(busId) {
   return useQuery({
     queryKey: queryKeys.buses.detail(busId),
-    queryFn: async () => (await getAdminBusById(busId)).data,
+    queryFn: () => adminBusApi.getAdminBusById(busId),
     enabled: Boolean(busId),
   });
 }
@@ -30,7 +24,7 @@ export function useBus(busId) {
 export function useCreateBus() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: createAdminBus,
+    mutationFn: adminBusApi.createAdminBus,
     onSuccess: () =>
       queryClient.invalidateQueries({ queryKey: queryKeys.buses.all }),
   });
@@ -39,7 +33,7 @@ export function useCreateBus() {
 export function useUpdateBus(busId) {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (bus) => updateAdminBus(busId, bus),
+    mutationFn: (bus) => adminBusApi.updateAdminBus(busId, bus),
     onSuccess: async () =>
       Promise.all([
         queryClient.invalidateQueries({ queryKey: queryKeys.buses.all }),
@@ -55,7 +49,7 @@ export function useUpdateBus(busId) {
 export function useDeleteBus() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: deleteAdminBus,
+    mutationFn: adminBusApi.deleteAdminBus,
     onSuccess: (_, busId) =>
       Promise.all([
         queryClient.invalidateQueries({ queryKey: queryKeys.buses.all }),

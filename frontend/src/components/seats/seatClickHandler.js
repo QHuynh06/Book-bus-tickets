@@ -1,13 +1,9 @@
-export function toggleSeatSelection(seat, setSelectedSeats) {
-    if (!["ACTIVE", "AVAILABLE"].includes(seat.status)) return;
+export function isSeatSelectable(seat) {
+    return seat.status === "AVAILABLE";
+}
 
-    setSelectedSeats((current) => {
-        const exists = current.includes(seat.id);
-
-        if (exists) {
-            return current.filter((id) => id !== seat.id);
-        }
-
-        return [...current, seat.id];
-    });
+export function toggleSeatSelection(selectedSeatIds, seatId) {
+    return selectedSeatIds.includes(seatId)
+        ? selectedSeatIds.filter((id) => id !== seatId)
+        : [...selectedSeatIds, seatId];
 }

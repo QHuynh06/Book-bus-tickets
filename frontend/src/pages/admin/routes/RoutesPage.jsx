@@ -16,6 +16,7 @@ function toRouteView(route) {
     };
 }
 
+// Chuẩn hóa dữ liệu để gửi api
 function toRoutePayload(formData) {
     return {
         departureCity: formData.departureCity,

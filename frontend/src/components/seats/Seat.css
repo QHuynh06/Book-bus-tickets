@@ -22,14 +22,6 @@
     object-fit: contain;
 }
 
-.seat__number {
-    margin-top: 2px;
-
-    font-size: 10px;
-    line-height: 1.2;
-    color: #555;
-}
-
 .seat--unavailable {
     cursor: not-allowed;
 }

@@ -1,7 +1,6 @@
 import { Link, useParams } from "react-router-dom";
 import Card from "../../../components/common/Card.jsx";
-import { useTrip } from "../../../hooks/useTrips";
-import { useTripSeats } from "../../../hooks/useSeats";
+import { useTripSeats, useTrip } from "../../../hooks";
 import "./TripDetailsPage.css";
 import {display, plugin, snowflake, water, wifi, toilet} from "../../../assets"
 
@@ -37,6 +36,17 @@ function RouteStop({ label, value, station, tone }) {
         </div>
     );
 }
+
+const TRIP_STATUS_LABELS = {
+    SCHEDULED: "Đã lên lịch",
+    DEPARTED: "Đã khởi hành",
+    COMPLETED: "Hoàn thành",
+    CANCELLED: "Đã hủy",
+};
+
+const getTripStatusLabel = (status) => {
+    return TRIP_STATUS_LABELS[status] ?? status ?? "Chưa cập nhật";
+};
 
 export default function TripDetailsPage() {
     const { tripId } = useParams();
@@ -122,7 +132,7 @@ export default function TripDetailsPage() {
                             </div>
                             <div className="trip-fact">
                                 <span>Trạng thái</span>
-                                <strong>{trip.status || "—"}</strong>
+                                <strong>{getTripStatusLabel(trip.status)}</strong>
                             </div>
                             <div className="trip-fact">
                                 <span>Số ghế</span>

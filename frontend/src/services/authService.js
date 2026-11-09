@@ -29,3 +29,9 @@ export async function getMe() {
   const response = await apiClient.get("/users/me");
   return response.data;
 }
+
+// Cập nhật hồ sơ của chính mình: PUT /users/me { username, email, fullName, phone }
+export async function updateMe({ username, email, fullName, phone }) {
+  const response = await apiClient.put("/users/me", { username, email, fullName, phone });
+  return response.data;
+}

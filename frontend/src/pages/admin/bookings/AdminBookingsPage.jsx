@@ -1,14 +1,8 @@
 import { useMemo, useState } from "react";
 import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
-
-import {
-  confirmAdminBooking,
-  getAllBookings,
-} from "../../../api/adminBookingApi";
+  useAdminBookings,
+  useConfirmAdminBooking,
+} from "../../../hooks/useAdminBookings";
 
 import BookingStats from "./BookingStats";
 import BookingFilters from "./BookingFilters";
@@ -17,43 +11,44 @@ import BookingDetailModal from "./BookingDetailModal";
 
 import "./AdminBookingsPage.css";
 
+const PAGE_SIZE = 30;
+const EMPTY_BOOKINGS = [];
+
+function sortBookingsByIdDescending(bookings) {
+  return [...bookings].sort(
+    (a, b) => Number(b.id) - Number(a.id),
+  );
+}
+
 function AdminBookingsPage() {
-  const queryClient = useQueryClient();
 
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("ALL");
+  const [currentPage, setCurrentPage] = useState(1);
   const [selectedBooking, setSelectedBooking] = useState(null);
 
   const {
     data,
     isPending,
     isError,
-    error,
-  } = useQuery({
-    queryKey: ["admin", "bookings"],
-    queryFn: getAllBookings,
-  });
+    refetch,
+  } = useAdminBookings();
 
-  const confirmMutation = useMutation({
-    mutationFn: confirmAdminBooking,
+  const confirmMutation = useConfirmAdminBooking();
 
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["admin", "bookings"],
-      });
+  const bookings = data?.data ?? EMPTY_BOOKINGS;
 
-      setSelectedBooking(null);
-    },
-  });
+  // Sắp xếp ID booking từ lớn đến nhỏ.
+  const sortedBookings = useMemo(
+    () => sortBookingsByIdDescending(bookings),
+    [bookings],
+  );
 
-  const bookings = data?.data ?? [];
-
+  // Tìm kiếm và lọc trạng thái.
   const filteredBookings = useMemo(() => {
-    const normalizedSearch = search
-      .trim()
-      .toLowerCase();
+    const normalizedSearch = search.trim().toLowerCase();
 
-    return bookings.filter((booking) => {
+    return sortedBookings.filter((booking) => {
       const matchesStatus =
         statusFilter === "ALL" ||
         booking.status === statusFilter;
@@ -84,13 +79,48 @@ function AdminBookingsPage() {
         .join(" ")
         .toLowerCase();
 
-      return (
-        matchesStatus &&
-        (bookingText.includes(normalizedSearch) ||
-          ticketText.includes(normalizedSearch))
-      );
+      const matchesSearch =
+        bookingText.includes(normalizedSearch) ||
+        ticketText.includes(normalizedSearch);
+
+      return matchesStatus && matchesSearch;
     });
-  }, [bookings, search, statusFilter]);
+  }, [sortedBookings, search, statusFilter]);
+
+  // Tính toán phân trang.
+  const totalPages = Math.max(
+    1,
+    Math.ceil(filteredBookings.length / PAGE_SIZE),
+  );
+
+  const safeCurrentPage = Math.min(currentPage, totalPages);
+
+  const paginatedBookings = useMemo(() => {
+    const startIndex = (safeCurrentPage - 1) * PAGE_SIZE;
+
+    return filteredBookings.slice(
+      startIndex,
+      startIndex + PAGE_SIZE,
+    );
+  }, [filteredBookings, safeCurrentPage]);
+
+  // Hiển thị tối đa 5 nút số trang.
+  const pageNumbers = useMemo(() => {
+    const startPage = Math.max(
+      1,
+      Math.min(safeCurrentPage - 2, totalPages - 4),
+    );
+
+    const endPage = Math.min(
+      totalPages,
+      startPage + 4,
+    );
+
+    return Array.from(
+      { length: endPage - startPage + 1 },
+      (_, index) => startPage + index,
+    );
+  }, [safeCurrentPage, totalPages]);
 
   const handleConfirm = (bookingId) => {
     const confirmed = window.confirm(
@@ -101,7 +131,11 @@ function AdminBookingsPage() {
       return;
     }
 
-    confirmMutation.mutate(bookingId);
+    confirmMutation.mutate(bookingId, {
+      onSuccess: () => {
+        setSelectedBooking(null);
+      },
+    });
   };
 
   if (isPending) {
@@ -123,16 +157,12 @@ function AdminBookingsPage() {
 
           <h2>Không thể tải dữ liệu</h2>
 
-          <p>{error?.message}</p>
+          <p>Vui lòng thử lại sau.</p>
 
           <button
             type="button"
             className="btn btn-primary"
-            onClick={() =>
-              queryClient.invalidateQueries({
-                queryKey: ["admin", "bookings"],
-              })
-            }
+            onClick={() => refetch()}
           >
             Thử lại
           </button>
@@ -164,9 +194,15 @@ function AdminBookingsPage() {
         <section className="bookings-card">
           <BookingFilters
             search={search}
-            setSearch={setSearch}
+            setSearch={(value) => {
+              setSearch(value);
+              setCurrentPage(1);
+            }}
             statusFilter={statusFilter}
-            setStatusFilter={setStatusFilter}
+            setStatusFilter={(value) => {
+              setStatusFilter(value);
+              setCurrentPage(1);
+            }}
             resultCount={filteredBookings.length}
           />
 
@@ -178,11 +214,66 @@ function AdminBookingsPage() {
           )}
 
           <BookingTable
-            bookings={filteredBookings}
+            bookings={paginatedBookings}
             onView={setSelectedBooking}
             onConfirm={handleConfirm}
             isConfirming={confirmMutation.isPending}
           />
+
+          {/* Pagination */}
+          {filteredBookings.length > 0 && (
+            <div className="table-pagination">
+              <span className="pagination-info">
+                Hiển thị{" "}
+                {(safeCurrentPage - 1) * PAGE_SIZE + 1}–
+                {Math.min(
+                  safeCurrentPage * PAGE_SIZE,
+                  filteredBookings.length,
+                )}{" "}
+                / {filteredBookings.length} booking
+              </span>
+
+              <div className="pagination-controls">
+                <button
+                  type="button"
+                  className="pagination-btn"
+                  disabled={safeCurrentPage === 1}
+                  onClick={() =>
+                    setCurrentPage((page) => page - 1)
+                  }
+                >
+                  Trước
+                </button>
+
+                {pageNumbers.map((page) => (
+                  <button
+                    key={page}
+                    type="button"
+                    className={`pagination-btn ${
+                      safeCurrentPage === page ? "active" : ""
+                    }`}
+                    aria-current={
+                      safeCurrentPage === page ? "page" : undefined
+                    }
+                    onClick={() => setCurrentPage(page)}
+                  >
+                    {page}
+                  </button>
+                ))}
+
+                <button
+                  type="button"
+                  className="pagination-btn"
+                  disabled={safeCurrentPage === totalPages}
+                  onClick={() =>
+                    setCurrentPage((page) => page + 1)
+                  }
+                >
+                  Sau
+                </button>
+              </div>
+            </div>
+          )}
         </section>
       </div>
 

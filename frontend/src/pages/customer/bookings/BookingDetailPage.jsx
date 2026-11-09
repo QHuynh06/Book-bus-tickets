@@ -1,17 +1,10 @@
-import {
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
 import { useParams, useNavigate } from "react-router-dom";
-
-import {
-  cancelBooking,
-  cancelTicket,
-  getBookingById,
-} from "../../../api/bookingApi";
 import { useTrip } from "../../../hooks/useTrips";
-
+import {
+  useBooking,
+  useCancelBooking,
+  useCancelTicket,
+} from "../../../hooks/useBookings";
 import "./BookingDetailPage.css";
 
 const ACTIVE_TICKET_STATUSES = [
@@ -60,16 +53,11 @@ function getTicketStatusLabel(status) {
 function BookingDetailPage() {
   const { bookingId } = useParams();
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
 
   /*
    * 1. Lấy Booking Detail 
    */
-  const bookingQuery = useQuery({
-    queryKey: ["booking", bookingId],
-    queryFn: () => getBookingById(bookingId),
-    enabled: Boolean(bookingId),
-  });
+  const bookingQuery = useBooking(bookingId);
 
   const booking = bookingQuery.data?.data;
 
@@ -81,39 +69,12 @@ function BookingDetailPage() {
   /*
    * 3. Hủy một Ticket
    */
-  const cancelTicketMutation = useMutation({
-    mutationFn: ({ ticketId }) =>
-      cancelTicket(bookingId, ticketId),
-
-    onSuccess: (response) => {
-      queryClient.setQueryData(
-        ["booking", bookingId],
-        response,
-      );
-
-      queryClient.invalidateQueries({
-        queryKey: ["bookings", "me"],
-      });
-    },
-  });
+  const cancelTicketMutation = useCancelTicket(bookingId);
 
   /*
    * 4. Hủy toàn bộ Booking
    */
-  const cancelBookingMutation = useMutation({
-    mutationFn: () => cancelBooking(bookingId),
-
-    onSuccess: (response) => {
-      queryClient.setQueryData(
-        ["booking", bookingId],
-        response,
-      );
-
-      queryClient.invalidateQueries({
-        queryKey: ["bookings", "me"],
-      });
-    },
-  });
+  const cancelBookingMutation = useCancelBooking(bookingId);
 
   if (bookingQuery.isPending) {
     return (
@@ -132,10 +93,7 @@ function BookingDetailPage() {
         <div className="booking-detail-state error">
           <h2>Không thể tải booking</h2>
 
-          <p>
-            {bookingQuery.error?.message ??
-              "Đã xảy ra lỗi."}
-          </p>
+          <p> Vui lòng thử lại sau. </p>
 
           <button
             type="button"
@@ -179,10 +137,7 @@ function BookingDetailPage() {
         <div className="booking-detail-state error">
           <h2>Không thể tải thông tin chuyến xe</h2>
 
-          <p>
-            {tripQuery.error?.message ??
-              "Đã xảy ra lỗi."}
-          </p>
+          <p> Vui lòng thử lại sau. </p>
         </div>
       </div>
     );
@@ -434,7 +389,7 @@ function BookingDetailPage() {
                         </span>
 
                         <h3>
-                          Ghế {ticket.seatNumber}
+                          Mã ghế #{ticket.seatId}
                         </h3>
                       </div>
 
@@ -466,10 +421,10 @@ function BookingDetailPage() {
                       </div>
 
                       <div>
-                        <span>Seat ID</span>
+                        <span>Số ghế</span>
 
                         <strong>
-                          #{ticket.seatId}
+                          {ticket.seatNumber}
                         </strong>
                       </div>
 

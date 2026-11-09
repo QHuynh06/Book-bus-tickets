@@ -1,17 +1,18 @@
 import axiosClient from "./axiosClient";
 
-export const getAdminBuses = () => {
-  return axiosClient.get("/admin/buses");
+export const adminBusApi = {
+  getAdminBuses: async () =>
+    (await axiosClient.get("/admin/buses")).data,
+
+  getAdminBusById: async (id) =>
+    (await axiosClient.get(`/admin/buses/${id}`)).data,
+
+  createAdminBus: async (bus) =>
+    (await axiosClient.post("/admin/buses", bus)).data,
+
+  updateAdminBus: async (id, bus) =>
+    (await axiosClient.put(`/admin/buses/${id}`, bus)).data,
+
+  deleteAdminBus: async (id) =>
+    (await axiosClient.delete(`/admin/buses/${id}`)).data,
 };
-
-export const getAdminBusById = (busId) =>
-  axiosClient.get(`/admin/buses/${busId}`);
-
-export const createAdminBus = (bus) =>
-  axiosClient.post("/admin/buses", bus);
-
-export const updateAdminBus = (busId, bus) =>
-  axiosClient.put(`/admin/buses/${busId}`, bus);
-
-export const deleteAdminBus = (busId) =>
-  axiosClient.delete(`/admin/buses/${busId}`);

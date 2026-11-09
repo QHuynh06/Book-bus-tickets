@@ -32,7 +32,10 @@ export async function getDashboard() {
 
   // Doanh thu chỉ tính vé đã được admin xác nhận
   const confirmed = bookings.filter((b) => b.status === "CONFIRMED");
-  const totalRevenue = confirmed.reduce((sum, b) => sum + Number(b.totalAmount || 0), 0);
+  const totalRevenue = confirmed.reduce(
+    (sum, b) => sum + Number(b.totalAmount || 0),
+    0,
+  );
 
   const bookingsByStatus = { PENDING: 0, CONFIRMED: 0, CANCELLED: 0 };
   bookings.forEach((b) => {
@@ -47,7 +50,9 @@ export async function getDashboard() {
   });
   confirmed.forEach((b) => {
     if (!b.bookedAt) return;
-    const day = revenueLast7Days.find((d) => d.date === dayKey(new Date(b.bookedAt)));
+    const day = revenueLast7Days.find(
+      (d) => d.date === dayKey(new Date(b.bookedAt)),
+    );
     if (day) {
       day.revenue += Number(b.totalAmount || 0);
       day.bookings += 1;

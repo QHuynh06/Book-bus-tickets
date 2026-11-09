@@ -9,9 +9,15 @@ import "../styles/fe1.css";
 export default function MainLayout() {
   return (
     <div className="fe1-page">
-      <div className="fe1"><Navbar /></div>
-      <div className="fe1-body"><Outlet /></div>
-      <div className="fe1"><Footer /></div>
+      <div className="fe1">
+        <Navbar />
+      </div>
+      <div className="fe1-body">
+        <Outlet />
+      </div>
+      <div className="fe1">
+        <Footer />
+      </div>
     </div>
   );
 }

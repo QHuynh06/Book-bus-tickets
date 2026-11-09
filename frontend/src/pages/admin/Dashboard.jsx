@@ -15,19 +15,32 @@ const STATUS = {
 };
 
 export default function Dashboard() {
-  const { data, isPending, isError, error, refetch, isFetching } = useDashboard();
+  const { data, isPending, isError, error, refetch, isFetching } =
+    useDashboard();
 
   return (
     <div className="fe1">
       <div className="row">
         <h1>Dashboard</h1>
-        <button type="button" className="btn btn-outline" onClick={() => refetch()} disabled={isFetching}>
-          <Icon name="refresh" size={16} /> {isFetching ? "Đang làm mới..." : "Làm mới"}
+        <button
+          type="button"
+          className="btn btn-outline"
+          onClick={() => refetch()}
+          disabled={isFetching}
+        >
+          <Icon name="refresh" size={16} />{" "}
+          {isFetching ? "Đang làm mới..." : "Làm mới"}
         </button>
       </div>
 
       {isPending && <Spinner label="Đang tải thống kê..." />}
-      {isError && <ErrorState error={error} onRetry={refetch} title="Không tải được thống kê" />}
+      {isError && (
+        <ErrorState
+          error={error}
+          onRetry={refetch}
+          title="Không tải được thống kê"
+        />
+      )}
       {data && <DashboardContent data={data} />}
     </div>
   );
@@ -36,7 +49,11 @@ export default function Dashboard() {
 function DashboardContent({ data }) {
   // Backend hiện chỉ trả 4 số tổng; các trường còn lại có thể không có -> kiểm tra trước khi hiển thị
   const cards = [
-    { label: "Doanh thu", value: data.totalRevenue == null ? null : formatPrice(data.totalRevenue), icon: "wallet" },
+    {
+      label: "Doanh thu",
+      value: data.totalRevenue == null ? null : formatPrice(data.totalRevenue),
+      icon: "wallet",
+    },
     { label: "Tổng vé đặt", value: data.totalBookings, icon: "ticket" },
     { label: "Chuyến xe", value: data.totalTrips, icon: "calendar" },
     { label: "Người dùng", value: data.totalUsers, icon: "users" },
@@ -63,84 +80,118 @@ function DashboardContent({ data }) {
       </div>
 
       {(revenueLast7Days.length > 0 || bookingsByStatus) && (
-      <div className="grid-2">
-        {revenueLast7Days.length > 0 && (
-        <section className="card">
-          <h2>Doanh thu 7 ngày gần nhất</h2>
-          <div className="bars">
-            {revenueLast7Days.map((day) => (
-              <div key={day.date} title={`${formatDate(day.date)}: ${formatPrice(day.revenue)} · ${day.bookings} vé`}>
-                <small>{(day.revenue / 1000000).toFixed(1)}tr</small>
-                <span style={{ height: `${(day.revenue / maxRevenue) * 80}%` }} />
-                <small>{formatDate(day.date).slice(0, 5)}</small>
+        <div className="grid-2">
+          {revenueLast7Days.length > 0 && (
+            <section className="card">
+              <h2>Doanh thu 7 ngày gần nhất</h2>
+              <div className="bars">
+                {revenueLast7Days.map((day) => (
+                  <div
+                    key={day.date}
+                    title={`${formatDate(day.date)}: ${formatPrice(day.revenue)} · ${day.bookings} vé`}
+                  >
+                    <small>{(day.revenue / 1000000).toFixed(1)}tr</small>
+                    <span
+                      style={{ height: `${(day.revenue / maxRevenue) * 80}%` }}
+                    />
+                    <small>{formatDate(day.date).slice(0, 5)}</small>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        </section>
-        )}
+            </section>
+          )}
 
-        {bookingsByStatus && (
-        <section className="card">
-          <h2>Vé theo trạng thái</h2>
-          {Object.entries(STATUS).map(([key, status]) => (
-            <p className="row" key={key}>
-              <span className={`badge ${status.cls}`}>{status.label}</span>
-              <strong>{bookingsByStatus[key] ?? 0}</strong>
-            </p>
-          ))}
-        </section>
-        )}
-      </div>
+          {bookingsByStatus && (
+            <section className="card">
+              <h2>Vé theo trạng thái</h2>
+              {Object.entries(STATUS).map(([key, status]) => (
+                <p className="row" key={key}>
+                  <span className={`badge ${status.cls}`}>{status.label}</span>
+                  <strong>{bookingsByStatus[key] ?? 0}</strong>
+                </p>
+              ))}
+            </section>
+          )}
+        </div>
       )}
 
       {(upcomingTrips || recentBookings) && (
-      <div className="grid-2">
-        {upcomingTrips && (
-        <section className="card">
-          <h2>Chuyến sắp khởi hành</h2>
-          {upcomingTrips.length === 0 ? (
-            <EmptyState icon="calendar" title="Không có chuyến sắp tới" />
-          ) : (
-            <table>
-              <thead><tr><th>Tuyến</th><th>Khởi hành</th><th>Số ghế</th></tr></thead>
-              <tbody>
-                {upcomingTrips.map((trip) => (
-                  <tr key={trip.id}>
-                    <td><RouteLabel from={cityLabel(trip.route.departureCity)} to={cityLabel(trip.route.destinationCity)} /></td>
-                    <td>{formatDateTime(trip.departureTime)}</td>
-                    <td>{trip.bus?.seatCount ?? "-"} ghế</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+        <div className="grid-2">
+          {upcomingTrips && (
+            <section className="card">
+              <h2>Chuyến sắp khởi hành</h2>
+              {upcomingTrips.length === 0 ? (
+                <EmptyState icon="calendar" title="Không có chuyến sắp tới" />
+              ) : (
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Tuyến</th>
+                      <th>Khởi hành</th>
+                      <th>Số ghế</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {upcomingTrips.map((trip) => (
+                      <tr key={trip.id}>
+                        <td>
+                          <RouteLabel
+                            from={cityLabel(trip.route.departureCity)}
+                            to={cityLabel(trip.route.destinationCity)}
+                          />
+                        </td>
+                        <td>{formatDateTime(trip.departureTime)}</td>
+                        <td>{trip.bus?.seatCount ?? "-"} ghế</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </section>
           )}
-        </section>
-        )}
 
-        {recentBookings && (
-        <section className="card">
-          <h2>Vé đặt gần đây</h2>
-          {recentBookings.length === 0 ? (
-            <EmptyState icon="ticket" title="Chưa có vé nào" />
-          ) : (
-            <table>
-              <thead><tr><th>Mã vé</th><th>Hành khách</th><th>Tuyến</th><th>Tổng tiền</th><th>Trạng thái</th></tr></thead>
-              <tbody>
-                {recentBookings.map((booking) => (
-                  <tr key={booking.id}>
-                    <td>{booking.bookingCode}</td>
-                    <td>{booking.customerName}</td>
-                    <td>{booking.route ? `${cityLabel(booking.route.departureCity)} → ${cityLabel(booking.route.destinationCity)}` : "-"}</td>
-                    <td>{formatPrice(booking.totalAmount)}</td>
-                    <td><span className={`badge ${STATUS[booking.status]?.cls}`}>{STATUS[booking.status]?.label}</span></td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          {recentBookings && (
+            <section className="card">
+              <h2>Vé đặt gần đây</h2>
+              {recentBookings.length === 0 ? (
+                <EmptyState icon="ticket" title="Chưa có vé nào" />
+              ) : (
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Mã vé</th>
+                      <th>Hành khách</th>
+                      <th>Tuyến</th>
+                      <th>Tổng tiền</th>
+                      <th>Trạng thái</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {recentBookings.map((booking) => (
+                      <tr key={booking.id}>
+                        <td>{booking.bookingCode}</td>
+                        <td>{booking.customerName}</td>
+                        <td>
+                          {booking.route
+                            ? `${cityLabel(booking.route.departureCity)} → ${cityLabel(booking.route.destinationCity)}`
+                            : "-"}
+                        </td>
+                        <td>{formatPrice(booking.totalAmount)}</td>
+                        <td>
+                          <span
+                            className={`badge ${STATUS[booking.status]?.cls}`}
+                          >
+                            {STATUS[booking.status]?.label}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </section>
           )}
-        </section>
-        )}
-      </div>
+        </div>
       )}
     </>
   );
