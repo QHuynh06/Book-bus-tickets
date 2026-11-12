@@ -3,6 +3,8 @@ package com.example.backend.service;
 import com.example.backend.entity.Bus;
 import com.example.backend.entity.Route;
 import com.example.backend.entity.Trip;
+import com.example.backend.enums.TripStatus;
+import com.example.backend.dto.trip.TripStatusResponse;
 import com.example.backend.exception.BadRequestException;
 import com.example.backend.exception.ResourceNotFoundException;
 import com.example.backend.repository.BookingRepository;
@@ -109,6 +111,29 @@ public class TripService {
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy chuyến xe"));
     }
 
+    @Transactional
+    public TripStatusResponse updateTripStatus(
+            Long id,
+            TripStatus status
+    ) {
+        if (status == null) {
+            throw new BadRequestException(
+                    "Phải cung cấp trạng thái chuyến xe"
+            );
+        }
+
+        Trip existingTrip = getTripForUpdate(id);
+
+        existingTrip.setStatus(status);
+
+        Trip savedTrip = tripRepository.save(existingTrip);
+
+        return new TripStatusResponse(
+                savedTrip.getId(),
+                savedTrip.getStatus()
+        );
+    }
+    
     public void deleteTrip(Long id) {
         Trip trip = getTripById(id);
         tripRepository.delete(trip);

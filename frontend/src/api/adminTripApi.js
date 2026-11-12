@@ -12,6 +12,11 @@ export const adminTripApi = {
 
   updateAdminTrip: async (id, trip) =>
     (await axiosClient.put(`/admin/trips/${id}`, trip)).data,
+  
+  updateAdminTripStatus: async (id, status) =>
+    (await axiosClient.patch(`/admin/trips/${id}/status`, {
+      status,
+    })).data,
 
   deleteAdminTrip: async (id) =>
     (await axiosClient.delete(`/admin/trips/${id}`)).data,

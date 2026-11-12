@@ -1,7 +1,11 @@
 import { useState } from "react";
 import { useBuses } from "../../../hooks/useBuses";
 import { useRoutes } from "../../../hooks/useRoutes";
-import { useAdminTrip, useUpdateAdminTrip } from "../../../hooks/useTrips";
+import {
+  useAdminTrip,
+  useUpdateAdminTrip,
+  useUpdateAdminTripStatus,
+} from "../../../hooks/useTrips";
 
 const initialForm = {
   routeId: "",
@@ -28,6 +32,7 @@ function EditTripForm({ tripId, onClose, today }) {
   const routesQuery = useRoutes();
   const busesQuery = useBuses();
   const updateMutation = useUpdateAdminTrip(tripId);
+  const updateStatusMutation = useUpdateAdminTripStatus(tripId);
 
   const [formOverride, setFormOverride] = useState(null);
 
@@ -84,6 +89,23 @@ function EditTripForm({ tripId, onClose, today }) {
       ...current,
       [name]: value,
     }));
+  };
+
+  const handleUpdateStatus = () => {
+    if (!form.status) {
+      alert("Vui lòng chọn trạng thái.");
+      return;
+    }
+
+    if (form.status === trip.status) {
+      return;
+    }
+
+    updateStatusMutation.mutate(form.status, {
+      onSuccess: () => {
+        onClose();
+      },
+    });
   };
 
   const handleSubmit = (event) => {
@@ -163,7 +185,7 @@ function EditTripForm({ tripId, onClose, today }) {
         departureTime: form.departureTime,
         arrivalTime: form.arrivalTime,
         price,
-        status: form.status,
+        status: trip.status,
         notes: form.notes,
       },
       {
@@ -299,6 +321,27 @@ function EditTripForm({ tripId, onClose, today }) {
             <option value="COMPLETED">Hoàn thành</option>
             <option value="CANCELLED">Đã hủy</option>
         </select>
+
+        <button
+          type="button"
+          onClick={handleUpdateStatus}
+          disabled={
+            updateStatusMutation.isPending ||
+            updateMutation.isPending ||
+            form.status === trip.status
+          }
+        >
+          {updateStatusMutation.isPending
+            ? "Đang cập nhật trạng thái..."
+            : "Cập nhật trạng thái"}
+
+          {updateStatusMutation.isError && (
+            <p>
+              Cập nhật trạng thái thất bại:{" "}
+              {updateStatusMutation.error.message}
+            </p>
+          )}
+        </button>
       </div>
 
       <div>
@@ -315,7 +358,10 @@ function EditTripForm({ tripId, onClose, today }) {
 
       <button
         type="submit"
-        disabled={updateMutation.isPending}
+        disabled={
+          updateMutation.isPending ||
+          updateStatusMutation.isPending
+        }
       >
         {updateMutation.isPending
           ? "Đang lưu..."

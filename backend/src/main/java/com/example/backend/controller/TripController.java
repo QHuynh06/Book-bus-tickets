@@ -2,6 +2,9 @@ package com.example.backend.controller;
 
 import com.example.backend.entity.Trip;
 import com.example.backend.service.TripService;
+import com.example.backend.dto.trip.TripStatusResponse;
+import com.example.backend.dto.trip.UpdateTripStatusRequest;
+import com.example.backend.exception.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,6 +42,23 @@ public class TripController {
             @RequestBody Trip trip
     ) {
         return tripService.updateTrip(id, trip);
+    }
+
+   @PatchMapping("/{id}/status")
+    public TripStatusResponse updateTripStatus(
+            @PathVariable Long id,
+            @RequestBody UpdateTripStatusRequest request
+    ) {
+        if (request == null) {
+            throw new BadRequestException(
+                    "Phải cung cấp thông tin trạng thái chuyến xe"
+            );
+        }
+
+        return tripService.updateTripStatus(
+                id,
+                request.status()
+        );
     }
 
     @DeleteMapping("/{id}")

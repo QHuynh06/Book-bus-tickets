@@ -68,6 +68,28 @@ export function useUpdateAdminTrip(tripId) {
   });
 }
 
+export function useUpdateAdminTripStatus(tripId) {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (status) =>
+      adminTripApi.updateAdminTripStatus(tripId, status),
+
+    onSuccess: async () =>
+      Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.trips.admin,
+        }),
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.trips.adminDetail(tripId),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.trips.all,
+        }),
+      ]),
+  });
+}
+
 export function useDeleteAdminTrip() {
   const queryClient = useQueryClient();
   return useMutation({
