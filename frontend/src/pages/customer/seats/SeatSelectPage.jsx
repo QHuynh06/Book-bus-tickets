@@ -132,18 +132,18 @@ function TripSeatSelection({ tripId }) {
                 <p role="alert">Chưa cập nhật được trạng thái ghế. Vui lòng chờ hoặc thử lại.</p>
             )}
             {hasUnavailableSelection && (
-                <div role="alert">
-                    <p>Có ghế đã được người khác đặt, vui lòng chọn lại.</p>
-
-                    <button
-                        type="button"
-                        onClick={() => {
-                            alert("Xác nhận bỏ ghế không còn khả dụng!");
-                            setSelectedSeats(selectedSeats);
-                        }}
+                <div
+                    className="notice-overlay"
+                    onClick={(e) => {
+                        e.currentTarget.style.display = "none";
+                    }}
+                >
+                    <div
+                        className="notice-wrapper"
+                        onClick={(e) => e.stopPropagation()}
                     >
-                        Xác nhận
-                    </button>
+                        <p>⚠️ Có ghế đã được người khác đặt, vui lòng chọn lại.</p>
+                    </div>
                 </div>
             )}
 

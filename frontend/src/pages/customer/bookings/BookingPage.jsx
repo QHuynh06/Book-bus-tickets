@@ -269,6 +269,9 @@ function BookingPage() {
                           }))
                         }
                         placeholder="09xxxxxxxx"
+                        pattern="0[0-9]{9}"
+                        maxLength={10}
+                        title="Số điện thoại phải bắt đầu bằng 0 và có đúng 10 chữ số"
                         required
                       />
                     </label>
